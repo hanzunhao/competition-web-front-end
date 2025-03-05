@@ -1,5 +1,21 @@
-# Vue 3 + Vite
+# 如何运行
+1.确保已安装 Node.js和Git。
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+2.克隆仓库：
+git clone https://github.com/hanzunhao/competition-web-front-end.git
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+3.移动到项目文件夹
+cd competition-web-front-end
+
+4.安装依赖：
+npm install
+
+5.启动开发服务器：
+npm run dev
+并打开浏览器访问 http://localhost:5173。
+
+# 构建生产环境
+npm run build
+
+# 预览生产环境
+npm run preview
