@@ -19,6 +19,7 @@ import Echarts from 'vue-echarts'
 import * as echarts from 'echarts'
 import 'element-plus/dist/index.css'
 
+
 // 创建并挂载 Vue 应用
 const app = createApp(App)
 

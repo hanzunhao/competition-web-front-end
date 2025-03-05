@@ -1,16 +1,16 @@
-import axios from 'axios';
+import request from '../utils/request';
 
 const getAllWarning = async () => {
     try {
-        const response = await axios.get('/api/page_2/warning/selectAll');
-        return response.data.data;
+        const response = await request.get('/api/page_2/warning/selectAll');
+        return response.data;
     } catch (error) {
         return [];
     }
 };
 const deleteWarning = async (ids) => {
     try {
-        await axios.delete('/api/page_2/warning/delete', {
+        await request.delete('/api/page_2/warning/delete', {
             params: { ids }, // 将 ids 作为 URL 参数传递
             paramsSerializer: (params) => {
                 // 将数组转换为 ids=1&ids=2 格式

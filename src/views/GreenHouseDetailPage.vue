@@ -65,7 +65,7 @@ onMounted(() => {
 
     console.log('Video element:', videoElement.value);
     // 初始化 WebSocket 连接
-    socket = new WebSocket('ws://localhost:8080/video-stream');
+    socket = new WebSocket(`ws://localhost:8080/video-stream`);
     socket.binaryType = 'arraybuffer';
 
     socket.onmessage = (event) => {
@@ -97,55 +97,74 @@ onUnmounted(() => {
 <style scoped>
 /* 卡片容器 */
 .card-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 两列布局 */
-  gap: 12px; /* 卡片之间的间距 */
-  padding: 4px; /* 容器内边距 */
-  height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 两列布局 */
+    gap: 12px;
+    /* 卡片之间的间距 */
+    padding: 4px;
+    /* 容器内边距 */
+    height: 100%;
 }
 
 /* 卡片样式 */
 .data-card {
-  border-radius: 8px; /* 圆角 */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 更柔和的阴影 */
-  transition: transform 0.2s, box-shadow 0.2s; /* 添加悬停动画 */
-  background-color: #fff; /* 背景色 */
-  padding: 10px; /* 内边距 */
+    border-radius: 8px;
+    /* 圆角 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* 更柔和的阴影 */
+    transition: transform 0.2s, box-shadow 0.2s;
+    /* 添加悬停动画 */
+    background-color: #fff;
+    /* 背景色 */
+    padding: 10px;
+    /* 内边距 */
 }
 
 /* 卡片悬停效果 */
 .data-card:hover {
-  transform: translateY(-4px); /* 悬停时轻微上移 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 悬停时阴影加深 */
+    transform: translateY(-4px);
+    /* 悬停时轻微上移 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* 悬停时阴影加深 */
 }
 
 /* 卡片内容布局 */
 .card-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 居中对齐 */
-  justify-content: center; /* 垂直居中 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 居中对齐 */
+    justify-content: center;
+    /* 垂直居中 */
 }
 
 /* 键名样式 */
 .key {
-  font-size: 16px;
-  font-weight: 800; /* 中等粗细 */
-  color: #606266; /* Element UI 辅助色 */
-  margin-bottom: 8px; /* 与值的间距 */
+    font-size: 16px;
+    font-weight: 800;
+    /* 中等粗细 */
+    color: #606266;
+    /* Element UI 辅助色 */
+    margin-bottom: 8px;
+    /* 与值的间距 */
 }
 
 /* 值样式 */
 .value {
-  font-size: 20px;
-  font-weight: 600; /* 加粗 */
-  color: #409EFF; /* Element UI 主题色 */
+    font-size: 20px;
+    font-weight: 600;
+    /* 加粗 */
+    color: #409EFF;
+    /* Element UI 主题色 */
 }
 
 /* 单位样式 */
 .unit {
-  font-size: 12px;
-  color: #909399; /* Element UI 辅助色 */
-  margin-top: 4px; /* 与值的间距 */
+    font-size: 12px;
+    color: #909399;
+    /* Element UI 辅助色 */
+    margin-top: 4px;
+    /* 与值的间距 */
 }
 </style>

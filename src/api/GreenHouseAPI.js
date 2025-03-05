@@ -1,9 +1,9 @@
-import axios from 'axios';
+import request from '../utils/request';
 
 const getAllGreenHouseForm = async () => {
     try {
-        const response = await axios.get('/api/home');
-        return response.data.data;
+        const response = await request.get('/api/home');
+        return response.data;
     } catch (error) {
         return [];
     }

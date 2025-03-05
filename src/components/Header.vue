@@ -1,9 +1,6 @@
 <template>
-     <!-- 
+    <!-- 
         头部用户下拉菜单组件
-        该组件展示了用户头像以及下拉菜单，用户可以通过点击头像图标进入下拉菜单并选择"Logout"退出登录。
-        点击"Logout"后将跳转到登录页面。
-
         功能说明：
         - circleUrl: 用户头像的图片地址
         - logoutHandle: 退出登录后跳转到登录页面
@@ -30,23 +27,40 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '../api';
 
 const router = useRouter();
 
-const circleUrl = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
+// 用户头像地址
+const circleUrl = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png');
 
-const logoutHandle=()=>{
-    router.push({ name: 'Login' });
-}
-
+// 注销处理函数
+const logoutHandle = async () => {
+    try {
+        await api.LoginAPI.logout(router);
+        console.log('注销成功，跳转到登录页面');
+    } catch (error) {
+        console.error('注销失败:', error);
+        // 可以根据需要提示用户注销失败
+    }
+};
 </script>
 
 <style scoped>
 .header {
     display: flex;
     justify-content: flex-end;
-    box-shadow: none;
     align-items: center;
     height: 100%;
+}
+
+.el-dropdown-link {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.el-icon--right {
+    margin-left: 8px;
 }
 </style>
