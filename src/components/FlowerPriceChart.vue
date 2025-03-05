@@ -17,7 +17,7 @@ const props = defineProps({
   },
   seriesData: {
     type: Array,
-    default: () => [120, 200, 150, 80, 70, 110, 130],
+    default: () => [130, 200, 150, 80, 70, 110, 130],
   },
 });
 
