@@ -1,11 +1,10 @@
-import { defineStore } from 'pinia';
-import api from '../api';
+import { defineStore } from "pinia";
+import api from "../api";
 
 export const GreenHouseStore = defineStore('GreenHouseStore', {
     state: () => ({
-        // 存储温室数据
-        list: [],
-        // 键名到中文名称的映射
+        list: [], // 存储温室数据
+
         keyToChinese: {
             id: '大棚ID',
             flowerName: '花卉名称',
@@ -20,8 +19,6 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
             soilEC: '土壤可溶性盐浓度',
             pestName: '病虫害',
         },
-
-        // 键名到单位的映射
         keyToUnit: {
             id: '',
             flowerName: '',
@@ -38,10 +35,16 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
         },
     }),
     actions: {
+        // 获取大棚数据
         async fetchGreenHouseForms() {
-            const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
-            console.log('All Greenhouse Data:', allGreenHouseForm);
-            this.list = allGreenHouseForm;
+            try {
+                const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
+                console.log('All Greenhouse Da ta:', allGreenHouseForm);
+                this.list = allGreenHouseForm;
+                this.shouldFetchData = false; // 数据获取完成后，标记为不需要重新获取
+            } catch (error) {
+                console.error('获取大棚数据失败:', error);
+            }            
         },
         // 获取键的中文名称
         getChineseKey(key) {

@@ -25,6 +25,8 @@ import router from '../router';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { onMounted } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
+import { JwtStore } from '../stores/jwtStore';
+
 
 // 定义一个二维数组，表示每行的温室ID
 const greenhouseRows = [
@@ -36,10 +38,17 @@ const greenhouseStroe = GreenHouseStore();
 
 const visibleStore = VisibleStore()
 
+const jwtStore = JwtStore();
+
+
 // 确保数据在组件挂载时加载
 onMounted(() => {
-    visibleStore.greenhouseId = null;
-    greenhouseStroe.fetchGreenHouseForms();
+    if (!jwtStore.jwt) {
+        router.push({ name: 'Login' })
+    } else {
+        visibleStore.greenhouseId = null;
+        greenhouseStroe.fetchGreenHouseForms();
+    }
 });
 
 // 从卡片跳转到大棚详情页面
@@ -48,10 +57,9 @@ const detailHandle = (id) => {
     router.push({ name: 'GreenHouseDetail' });
 };
 
-
-
 const hasPestWarning = function (id) {
-    return greenhouseStroe.list[id]?.pestName !== '无';
+    const hasPest = greenhouseStroe.list[id]?.pestName !== '无'
+    return hasPest;
 };
 </script>
 

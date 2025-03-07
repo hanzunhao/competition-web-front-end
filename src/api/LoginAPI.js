@@ -1,26 +1,23 @@
 import request from '../utils/request';
+import { JwtStore } from '../stores/jwtStore';
 
-// 常量定义
-const JWT_STORAGE_KEY = 'jwt';
+const jwtStore = JwtStore();
 
 // 工具函数：设置JWT到LocalStorage和Axios请求头
 const setJWT = (jwt) => {
-    localStorage.setItem(JWT_STORAGE_KEY, jwt);
-    request.defaults.headers.common['Token'] = `${jwt}`;
+    jwtStore.jwt = jwt
 };
 
 // 工具函数：清除JWT
 const clearJWT = () => {
-    localStorage.removeItem(JWT_STORAGE_KEY);
-    delete request.defaults.headers.common['Token'];
+    jwtStore.jwt = null
 };
 
 // 登录函数
 const login = async (router) => {
     try {
-        const response = await request.get("/api/login");        
+        const response = await request.get("/api/login");
         const jwt = response.data;
-        console.log("jwt:", jwt);
 
         // 设置JWT
         setJWT(jwt);
@@ -53,16 +50,7 @@ const logout = async (router) => {
     }
 };
 
-// 初始化函数：检查是否存在JWT并设置请求头
-const initAuth = () => {
-    const jwt = localStorage.getItem(JWT_STORAGE_KEY);
-    if (jwt) {
-        setJWT(jwt);
-    }
-};
-
 export default {
     login,
-    logout,
-    initAuth,
+    logout
 };

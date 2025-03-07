@@ -1,6 +1,9 @@
 //存放关于网络请求的工具的js文件
 import axios from "axios";
 import router from "../router";
+import { JwtStore } from "../stores/jwtStore";
+
+const jwtStore = JwtStore()
 
 // 错误处理函数
 const errorHandle = (status, info) => {
@@ -34,7 +37,8 @@ const instance = axios.create({
 
 // 请求拦截器
 instance.interceptors.request.use(
-    config => {
+    (config) => {
+        config.headers['Token'] = `${jwtStore.jwt}`;
         return config;
     },
     error => {
@@ -45,10 +49,9 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
     response => {
-        if (response.data.msg === "NOT_LOGIN") {            
-            localStorage.removeItem('Token'); // 清除 Token
+        if (response.data.msg === "NOT_LOGIN") {
+            jwtStore.jwt = null;
             router.push({ name: 'Login' }); // 跳转到登录页
-
         }
         return response.data
     },

@@ -20,7 +20,7 @@ export const VisibleStore = defineStore("VisibleStore", {
         enabled: true, // 启用持久化
         strategies: [
             {
-                key: 'timeline-store', // 存储的 key，默认是 store 的 id
+                key: 'visible-store', // 存储的 key，默认是 store 的 id
                 storage: localStorage, // 使用 localStorage
             },
         ],

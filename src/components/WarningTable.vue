@@ -7,7 +7,7 @@
     <!-- 表格区域，使用 el-scrollbar 实现滚动 -->
     <el-scrollbar style="height: 85%;">
         <!-- el-table 表格组件 -->
-        <el-table ref="multipleTableRef" :data="store.formattedList" row-key="id" style="width: 100%"
+        <el-table ref="multipleTableRef" :data="warningHistoryStore.formattedList" row-key="id" style="width: 100%"
             :default-sort="{ prop: 'date', order: 'descending' }" @selection-change="handleSelectionChange">
             <!-- 多选列 -->
             <el-table-column type="selection" width="55" />
@@ -29,9 +29,12 @@ import type { TableInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WarningHistoryStore } from '../stores/WarningHistoryStore'
 import { onMounted } from 'vue'
+import { JwtStore } from '../stores/jwtStore'
+import router from '../router'
 
-// 使用 WarningHistoryStore 获取数据
-const store = WarningHistoryStore()
+const warningHistoryStore = WarningHistoryStore()
+
+const jwtStore = JwtStore();
 
 // 表格实例引用
 const multipleTableRef = ref<TableInstance>()
@@ -49,7 +52,11 @@ const MESSAGES = {
 
 // 组件挂载时加载数据
 onMounted(() => {
-    store.getAllWarning()
+    if (!jwtStore.jwt) {
+        router.push({ name: 'Login' })
+    } else { 
+        warningHistoryStore.getAllWarning() 
+    }
 })
 
 // 确认删除操作
@@ -84,10 +91,10 @@ const deleteSelectedHistory = async () => {
     const selectedIds = multipleSelection.value.map((selected) => selected.id);
 
     // 调用 store 中的 deleteWarning 方法
-    await store.deleteWarning(selectedIds);
+    await warningHistoryStore.deleteWarning(selectedIds);
 
     // 删除成功后，重新加载数据
-    await store.getAllWarning();
+    await warningHistoryStore.getAllWarning();
 
     // 清空选中状态
     multipleTableRef.value!.clearSelection();

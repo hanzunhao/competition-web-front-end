@@ -8,10 +8,6 @@
 </template>
 
 <script>
-import api from './api';
-
-api.LoginAPI.initAuth();
-
 export default {
   name: 'App',
 }
