@@ -1,5 +1,5 @@
 <template>
-    <el-row :gutter="20" style="height: 100%;">
+    <el-row :gutter="20" style="height: 100%;" class="page">
         <el-col :span="4"  class="border-right" style="height: 100%;">
             <el-row style="height: 4%;">
                 <slot name="back-button"></slot>
@@ -29,5 +29,9 @@
 
 .border-bottom {
     border-bottom: 1px solid #ddd; /* 添加下边框 */
+}
+
+.page{
+    background-color: rgb(231, 249, 247);
 }
 </style>

@@ -4,7 +4,6 @@ import api from "../api";
 export const GreenHouseStore = defineStore('GreenHouseStore', {
     state: () => ({
         list: [], // 存储温室数据
-
         keyToChinese: {
             id: '大棚ID',
             flowerName: '花卉名称',
@@ -41,7 +40,6 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
                 const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
                 console.log('All Greenhouse Data:', allGreenHouseForm);
                 this.list = allGreenHouseForm;
-                this.shouldFetchData = false; // 数据获取完成后，标记为不需要重新获取
             } catch (error) {
                 console.error('获取大棚数据失败:', error);
             }            

@@ -78,5 +78,6 @@ watchEffect(() => {
 <style scoped>
 .aside-menu {
     height: 100%;
+    background-color: rgb(61, 184, 182);
 }
 </style>

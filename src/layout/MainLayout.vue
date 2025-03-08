@@ -16,11 +16,11 @@
         <Aside></Aside>
       </el-aside>
       <el-container>
-        <el-header>
+        <el-header class="header">
           <Header></Header>
         </el-header>
         <hr>
-        <el-main>
+        <el-main class="main">
           <slot></slot>
         </el-main>
       </el-container>
@@ -37,5 +37,13 @@ import Header from '../components/Header.vue';
 .common-layout,
 .el-container{
   height: 100%;
+}
+
+.main{
+  background-color: rgb(231, 249, 247);
+}
+
+.header{
+  background: linear-gradient(0.25turn, #e7f9f7, #a4e5e2, #3db8b6, #009e9e, #007b80);
 }
 </style>

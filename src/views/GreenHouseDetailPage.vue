@@ -21,7 +21,26 @@
             </div>
         </template>
         <template v-slot:greenhouse-map>
-            温室地图
+            <!-- 增加条件渲染 -->
+            <div v-if="flowerPotStore.list[visibleStore.greenhouseId]">
+                <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" style="height: 50%;">
+                    <el-col :span="6" v-for="potId in row" :key="potId" style="display: flex;align-items: center;">
+                        <div class="pot" :id="potId">
+                            <FlowerPot>
+                                <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
+                                <template
+                                    #soilTemperature>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature }}℃</template>
+                                <template
+                                    #soilHumidity>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity
+                                    }}%</template>
+                            </FlowerPot>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+            <div v-else>
+                数据加载中...
+            </div>
         </template>
         <template v-slot:device-video>
             <img ref="videoElement" src="" alt="Video Stream" style="height: 100%;width: 100%; margin: 1%;" />
@@ -36,14 +55,22 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import router from '../router';
 import GreenHouseDetailLayout from '../layout/GreenHouseDetailLayout.vue';
+import FlowerPot from '../components/FlowerPot.vue';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { VisibleStore } from '../stores/VisibleStore';
+import { FlowerPotStore } from '../stores/FlowerPotStore';
 
-const greenHouseStore = GreenHouseStore()
+const greenHouseStore = GreenHouseStore();
 
-const visibleStore = VisibleStore()
+const visibleStore = VisibleStore();
 
-const tempId = visibleStore.greenhouseId
+const flowerPotStore = FlowerPotStore();
+
+const tempId = visibleStore.greenhouseId;
+
+const potNum = ref(0); // 使用 ref 声明响应式变量
+
+const potRows = ref([]); // 使用 ref 声明响应式数组
 
 // 返回按钮逻辑
 const back = () => {
@@ -56,12 +83,28 @@ const videoElement = ref(null);
 // WebSocket 连接逻辑
 let socket = null;
 
-onMounted(() => {
+onMounted(async () => {
+    console.log("FlowerPotForms:", flowerPotStore.list);
+
     console.log("greenhouseid=" + visibleStore.greenhouseId)
 
     // 获取温室数据
-    greenHouseStore.fetchGreenHouseForms()
+    await greenHouseStore.fetchGreenHouseForms();
 
+    // 获取花盆数据
+    await flowerPotStore.fetchFlowerPotForms();
+
+    potNum.value = flowerPotStore.list[visibleStore.greenhouseId].length;
+
+    const rows = [];
+    for (let i = 0; i < potNum.value; i += 4) {
+        const row = [];
+        for (let j = 0; j < 4 && i + j < potNum.value; j++) {
+            row.push(i + j);
+        }
+        rows.push(row);
+    }
+    potRows.value = rows;
 
     console.log('Video element:', videoElement.value);
     // 初始化 WebSocket 连接

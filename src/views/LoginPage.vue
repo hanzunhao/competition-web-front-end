@@ -7,20 +7,25 @@
     -->
     <div class="login-register-page">
         <el-row class="form-container">
-            <el-col>
+            <el-col> <!-- 调整宽度 -->
                 <el-card class="form-card">
-                    <div class="form-header">
-                        <h3>Login</h3>
-                    </div>
-                    <el-form label-width="120px" :model="loginForm" :rules="rules" ref="loginFormRef">
-                        <el-form-item label="Account" prop="account">
-                            <el-input v-model="loginForm.account" placeholder="Enter your account" />
+                    <!-- 卡片头部 -->
+                    <template #header>
+                        <div class="card-header">
+                            <h3>登录</h3>
+                        </div>
+                    </template>
+
+                    <!-- 登录表单 -->
+                    <el-form label-width="80px" :model="loginForm" :rules="rules" ref="loginFormRef">
+                        <el-form-item label="用户名" prop="account">
+                            <el-input v-model="loginForm.account" placeholder="请输入用户名" />
                         </el-form-item>
-                        <el-form-item label="Password" prop="password">
-                            <el-input type="password" v-model="loginForm.password" placeholder="Enter your password" />
+                        <el-form-item label="密码" prop="password">
+                            <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" />
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" block @click="loginHandle" :loading="loading">Login</el-button>
+                            <el-button type="primary" @click="loginHandle" :loading="loading">登录</el-button>
                         </el-form-item>
                     </el-form>
                 </el-card>
@@ -46,7 +51,7 @@ const loginForm = ref({
 
 // 表单验证规则
 const rules = {
-    account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+    account: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
     password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 };
 
@@ -106,10 +111,43 @@ const loginHandle = async () => {
 }
 
 .form-card {
+    width: 100%;
+    /* 卡片宽度 */
     padding: 20px;
+    /* 内边距 */
     border-radius: 8px;
     background-color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* 添加阴影效果 */
+}
+
+.card-header {
+    text-align: center;
+    /* 标题居中 */
+    font-size: 18px;
+    color: rgb(0, 123, 128);
+    /* 蓝绿色 */
+    font-weight: bold;
+}
+
+.el-button--primary {
+    background-color: rgb(0, 123, 128);
+    /* 蓝绿色 */
+    border-color: rgb(0, 123, 128);
+    /* 蓝绿色 */
+}
+
+.el-button--primary:hover {
+    background-color: rgb(0, 123, 128);
+    /* 深蓝绿色 */
+    border-color: rgb(0, 123, 128);
+    /* 深蓝绿色 */
+}
+
+/* 覆盖 el-form-item__content 的 margin-left */
+:deep(.el-form-item__content) {
+    margin-left: 0 !important; /* 强制覆盖 */
+    display: flex;
+    justify-content: center; /* 按钮居中 */
 }
 </style>
