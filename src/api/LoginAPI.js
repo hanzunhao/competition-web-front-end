@@ -40,6 +40,7 @@ const logout = async (router) => {
 
         // 跳转至登录页面
         if (router) {
+            console.log("logout to login");
             router.push({ name: 'Login' });
         }
 

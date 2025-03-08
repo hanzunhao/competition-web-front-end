@@ -51,6 +51,7 @@ instance.interceptors.response.use(
     response => {
         if (response.data.msg === "NOT_LOGIN") {
             jwtStore.jwt = null;
+            console.log("interceptors to login");
             router.push({ name: 'Login' }); // 跳转到登录页
         }
         return response.data

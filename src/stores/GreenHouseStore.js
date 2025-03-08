@@ -39,7 +39,7 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
         async fetchGreenHouseForms() {
             try {
                 const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
-                console.log('All Greenhouse Da ta:', allGreenHouseForm);
+                console.log('All Greenhouse Data:', allGreenHouseForm);
                 this.list = allGreenHouseForm;
                 this.shouldFetchData = false; // 数据获取完成后，标记为不需要重新获取
             } catch (error) {
