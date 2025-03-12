@@ -15,8 +15,6 @@ import router from './router'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import Echarts from 'vue-echarts'
-import * as echarts from 'echarts'
 import 'element-plus/dist/index.css'
 
 
@@ -35,10 +33,6 @@ app.use(pinia)
 
 // 配置 Vue Router
 app.use(router)
-
-// 注册 ECharts 组件并配置全局属性
-app.component('e-charts', Echarts)
-app.config.globalProperties.$echarts = echarts
 
 // 挂载应用到 DOM
 app.mount('#app')

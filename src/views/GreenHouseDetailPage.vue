@@ -28,10 +28,11 @@
                         <div class="pot" :id="potId">
                             <FlowerPot>
                                 <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
-                                <template
-                                    #soilTemperature>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature }}℃</template>
-                                <template
-                                    #soilHumidity>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity
+                                <template #soilTemperature>{{
+                                    flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature
+                                    }}℃</template>
+                                <template #soilHumidity>{{
+                                    flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity
                                     }}%</template>
                             </FlowerPot>
                         </div>
@@ -46,7 +47,26 @@
             <img ref="videoElement" src="" alt="Video Stream" style="height: 100%;width: 100%; margin: 1%;" />
         </template>
         <template v-slot:data-tables>
-            图表区域
+            <div style="height: 100vh; display: flex; flex-direction: column;">
+                <!-- 第一行 -->
+                <el-row style="flex: 1;">
+                    <el-col :span="12">
+                        <Chart_1></Chart_1>
+                    </el-col>
+                    <el-col :span="12">
+                        <Chart_2></Chart_2>
+                    </el-col>
+                </el-row>
+                <!-- 第二行 -->
+                <el-row style="flex: 1;">
+                    <el-col :span="12">
+                        <Chart_3></Chart_3>
+                    </el-col>
+                    <el-col :span="12">
+                        <Chart_4></Chart_4>
+                    </el-col>
+                </el-row>
+            </div>
         </template>
     </GreenHouseDetailLayout>
 </template>
@@ -59,6 +79,10 @@ import FlowerPot from '../components/FlowerPot.vue';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
+import Chart_1 from '../components/Chart_1.vue';
+import Chart_2 from '../components/Chart_2.vue';
+import Chart_4 from '../components/Chart_4.vue';
+import Chart_3 from '../components/Chart_3.vue';
 
 const greenHouseStore = GreenHouseStore();
 
