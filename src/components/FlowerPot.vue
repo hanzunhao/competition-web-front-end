@@ -1,7 +1,7 @@
 <template>
     <el-card shadow="hover">
-        <el-descriptions class="margin-top" :column="1" :size="size" border>
-            
+        <el-descriptions class="margin-top" :column="1" :size="small" border>
+
             <el-descriptions-item>
                 <template #label>
                     <div class="cell-item">
@@ -45,8 +45,11 @@
 span {
     margin-right: 1%;
 }
-.el-card{
-    border-radius:20px;
+
+.el-card {
+    border-radius: 20px;
     box-shadow: 1px 1px;
+    height: 100%;
 }
+
 </style>

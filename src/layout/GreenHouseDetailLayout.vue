@@ -8,15 +8,15 @@
                 <slot name="data-card"></slot>
             </el-row>
         </el-col>
-        <el-col :span="8" class="border-right">
-            <el-row style="height: 48%;" class="border-bottom">
+        <el-col :span="9" class="border-right">
+            <el-row style="height: 45%;" class="border-bottom">
                 <slot name="greenhouse-map"></slot>
             </el-row>
-            <el-row style="height: 48%;">
+            <el-row style="height: 45%;">
                 <slot name="device-video"></slot>
             </el-row>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="11">
             <slot name="data-tables"></slot>
         </el-col>
     </el-row>

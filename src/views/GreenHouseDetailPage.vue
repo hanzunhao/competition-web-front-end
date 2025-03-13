@@ -22,10 +22,11 @@
         </template>
         <template v-slot:greenhouse-map>
             <!-- 增加条件渲染 -->
-            <div v-if="flowerPotStore.list[visibleStore.greenhouseId]">
+            <div v-if="flowerPotStore.list[visibleStore.greenhouseId]" style="height: 100%;">
                 <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" style="height: 50%;">
-                    <el-col :span="6" v-for="potId in row" :key="potId" style="display: flex;align-items: center;">
-                        <div class="pot" :id="potId">
+                    <el-col :span="6" v-for="potId in row" :key="potId"
+                        style="display: flex;align-items: center;height: 100%;">
+                        <div class="pot" :id="potId" style="height: 100%;">
                             <FlowerPot>
                                 <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
                                 <template #soilTemperature>{{
@@ -47,7 +48,7 @@
             <img ref="videoElement" src="" alt="Video Stream" style="height: 100%;width: 100%; margin: 1%;" />
         </template>
         <template v-slot:data-tables>
-            <div style="height: 100vh; display: flex; flex-direction: column;">
+            <div style="height: 100%; display: flex; flex-direction: column;">
                 <!-- 第一行 -->
                 <el-row style="flex: 1;">
                     <el-col :span="12">
@@ -92,9 +93,9 @@ const flowerPotStore = FlowerPotStore();
 
 const tempId = visibleStore.greenhouseId;
 
-const potNum = ref(0); // 使用 ref 声明响应式变量
+const potNum = ref(0);
 
-const potRows = ref([]); // 使用 ref 声明响应式数组
+const potRows = ref([]);
 
 // 返回按钮逻辑
 const back = () => {
