@@ -78,6 +78,6 @@ watchEffect(() => {
 <style scoped>
 .aside-menu {
     height: 100%;
-    background-color: rgb(61, 184, 182);
+    /* 确保 el-menu 占满 el-aside 的高度 */
 }
 </style>

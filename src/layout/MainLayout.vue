@@ -12,7 +12,7 @@
     -->
   <div class="common-layout">
     <el-container>
-      <el-aside width="200px">
+      <el-aside class="aside" width="200px">
         <Aside></Aside>
       </el-aside>
       <el-container>
@@ -35,15 +35,10 @@ import Header from '../components/Header.vue';
 
 <style scoped>
 .common-layout,
-.el-container{
+.el-container {
   height: 100%;
 }
-
-.main{
-  background-color: rgb(231, 249, 247);
-}
-
-.header{
-  background: linear-gradient(0.25turn, #e7f9f7, #a4e5e2, #3db8b6, #009e9e, #007b80);
+.aside {
+    border-right: 1px solid #dcdfe6; 
 }
 </style>
