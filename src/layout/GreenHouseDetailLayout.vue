@@ -9,10 +9,10 @@
             </el-row>
         </el-col>
         <el-col :span="8" class="border-right">
-            <el-row style="height: 45%;" class="border-bottom">
+            <el-row style="height: 50%;" class="border-bottom">
                 <slot name="greenhouse-map"></slot>
             </el-row>
-            <el-row style="height: 45%;">
+            <el-row style="height: 50%;">
                 <slot name="device-video"></slot>
             </el-row>
         </el-col>
@@ -20,7 +20,14 @@
             <slot name="data-tables"></slot>
         </el-col>
     </el-row>
+
+    <FlowerPotDrawer></FlowerPotDrawer>
 </template>
+
+<script setup>
+import FlowerPotDrawer from '../components/FlowerPotDrawer.vue';
+</script>
+
 
 <style scoped>
 .border-right {

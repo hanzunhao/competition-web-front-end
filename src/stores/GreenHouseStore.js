@@ -42,7 +42,7 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
                 this.list = allGreenHouseForm;
             } catch (error) {
                 console.error('获取大棚数据失败:', error);
-            }            
+            }
         },
         // 获取键的中文名称
         getChineseKey(key) {
@@ -52,5 +52,14 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
         getUnit(key) {
             return this.keyToUnit[key] || ''; // 如果找不到对应的单位，返回空字符串
         },
-    }
+    },
+    persist: {
+        enabled: true, // 启用持久化
+        strategies: [
+            {
+                key: 'visible-store', // 存储的 key，默认是 store 的 id
+                storage: localStorage, // 使用 localStorage
+            },
+        ],
+    },
 });

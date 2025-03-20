@@ -57,4 +57,10 @@ span {
     border-radius:20px;
     box-shadow: 1px 1px;
 }
+.el-card:hover {
+    transform: translateY(-4px);
+    /* 悬停时轻微上移 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* 悬停时阴影加深 */
+}
 </style>

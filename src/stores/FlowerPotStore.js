@@ -10,7 +10,6 @@ export const FlowerPotStore = defineStore('FlowerPotStore', {
         async fetchFlowerPotForms() {
             try {
                 const allFlowerPotForm = await api.FlowerPotAPI.getAllFlowerPotForm();
-                console.log('All FlowerPot Data:', allFlowerPotForm);
                 this.list = allFlowerPotForm;                
             } catch (error) {
                 console.error('获取花盆数据失败:', error);
