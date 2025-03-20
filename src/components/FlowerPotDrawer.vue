@@ -1,5 +1,8 @@
 <template>
     <el-drawer v-model="visibleStore.flowerPotDrawerVisible" direction="rtl" size="51%" :before-close="handleClose">
+        <template #header>
+            <div class="custom-header">花盆具体数据</div>
+        </template>
         <div v-if="flowerPotStore.list[visibleStore.greenhouseId]" class="drawer-content" v-infinite-scroll="loadMore">
             <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" class="pot-row">
                 <el-col :span="6" v-for="potId in row" :key="potId" class="pot-col">
@@ -7,11 +10,11 @@
                         <FlowerPot>
                             <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
                             <template #soilTemperature>{{
-                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature
-                            }}℃</template>
+                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature }}℃
+                            </template>
                             <template #soilHumidity>{{
-                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity
-                            }}%</template>
+                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity }}%
+                            </template>
                         </FlowerPot>
                     </div>
                 </el-col>
@@ -22,13 +25,9 @@
                 </el-icon>
                 加载中...
             </div>
-            <div v-if="noMore" class="no-more">
-                没有更多数据了
-            </div>
+            <div v-if="noMore" class="no-more">没有更多数据了</div>
         </div>
-        <div v-else class="loading-message">
-            数据加载中...
-        </div>
+        <div v-else class="loading-message">数据加载中...</div>
     </el-drawer>
 </template>
 
@@ -43,40 +42,28 @@ const flowerPotStore = FlowerPotStore();
 
 const potNum = ref(0);
 const potRows = ref([]);
-const loading = ref(false); // 加载状态
-const noMore = ref(false); // 是否没有更多数据
-const page = ref(1); // 当前页码
-const pageSize = 8; // 每页加载的数据量
+const loading = ref(false);
+const noMore = ref(false);
+const pageSize = 8;
 
-// 监听抽屉的显示状态
 watch(
     () => visibleStore.flowerPotDrawerVisible,
     (newVal) => {
-        if (newVal) {
-            fetchFlowerPotData(); // 抽屉打开时获取数据
-        }
+        if (newVal) fetchFlowerPotData();
     }
 );
 
-// 组件挂载时检查抽屉状态
 onMounted(() => {
-    if (visibleStore.flowerPotDrawerVisible) {
-        fetchFlowerPotData(); // 如果抽屉是打开的，重新获取数据
-    }
+    if (visibleStore.flowerPotDrawerVisible) fetchFlowerPotData();
 });
 
 const handleClose = () => {
     visibleStore.flowerPotDrawerVisible = false;
 };
 
-// 获取花盆数据
 const fetchFlowerPotData = async () => {
     await flowerPotStore.fetchFlowerPotForms();
-
-    console.log("FlowerPotForms:", flowerPotStore.list);
-
     potNum.value = flowerPotStore.list[visibleStore.greenhouseId].length;
-
     const rows = [];
     for (let i = 0; i < potNum.value; i += 4) {
         const row = [];
@@ -88,14 +75,9 @@ const fetchFlowerPotData = async () => {
     potRows.value = rows;
 };
 
-// 加载更多数据
 const loadMore = async () => {
     if (loading.value || noMore.value) return;
-
     loading.value = true;
-    console.log("加载更多数据...");
-
-    // 模拟异步加载数据
     setTimeout(() => {
         const newRows = [];
         const startIndex = potRows.value.length * 4;
@@ -106,26 +88,23 @@ const loadMore = async () => {
             }
             newRows.push(row);
         }
-
         if (newRows.length > 0) {
             potRows.value.push(...newRows);
         } else {
-            noMore.value = true; // 没有更多数据
+            noMore.value = true;
         }
-
         loading.value = false;
-    }, 1000); // 模拟延迟
+    }, 1000);
 };
 </script>
 
 <style scoped>
 .drawer-content {
-    height: 93%;
+    height: 88%;
     background-color: #f5f5f5;
     padding: 10px;
     border-radius: 8px;
     overflow-y: auto;
-    /* 允许垂直滚动 */
 }
 
 .pot-row {
@@ -172,5 +151,14 @@ const loadMore = async () => {
     padding: 10px;
     font-size: 14px;
     color: #666;
+}
+
+.custom-header {
+    height: 8px;
+    padding: 1px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
 }
 </style>

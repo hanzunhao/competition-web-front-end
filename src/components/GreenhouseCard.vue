@@ -8,7 +8,7 @@
             </span>
             <slot name="flower"></slot>
         </template>
-        <el-descriptions class="margin-top" :column="1" :size="size" border>
+        <el-descriptions :column="1" :size="size" border>
             <el-descriptions-item>
                 <template #label>
                     <div class="cell-item">
@@ -53,14 +53,14 @@
 span {
     margin-right: 2%;
 }
-.el-card{
-    border-radius:20px;
+
+.el-card {
+    border-radius: 20px;
     box-shadow: 1px 1px;
 }
+
 .el-card:hover {
     transform: translateY(-4px);
-    /* 悬停时轻微上移 */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    /* 悬停时阴影加深 */
 }
 </style>

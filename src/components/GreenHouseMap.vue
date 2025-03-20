@@ -66,23 +66,19 @@ const handleDoubleClick = () => visibleStore.flowerPotDrawerVisible = true;
 .grid-row {
     height: 20%;
     border-bottom: 1px solid #e0e0e0;
-    /* 添加行底部边框 */
 }
 
 .grid-row:last-child {
     border-bottom: none;
-    /* 最后一行不需要底部边框 */
 }
 
 .grid-col {
     height: 100%;
     border-right: 1px solid #e0e0e0;
-    /* 添加列右侧边框 */
 }
 
 .grid-col:last-child {
     border-right: none;
-    /* 最后一列不需要右侧边框 */
 }
 
 .grid-item {

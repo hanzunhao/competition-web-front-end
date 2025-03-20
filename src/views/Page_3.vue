@@ -1,5 +1,4 @@
 <template>
-    <!-- 页面三 -->
     <MainLayout>
         <el-row gutter="20">
             <el-col :span="4">

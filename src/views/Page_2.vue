@@ -1,5 +1,4 @@
 <template>
-    <!-- 页面二 -->
     <MainLayout>
         <el-row gutter="20">
             <el-col :span="10">
@@ -20,7 +19,6 @@
             </el-col>
         </el-row>
 
-        <!-- TaskDrawer 组件 -->
         <TaskDrawer></TaskDrawer>
     </MainLayout>
 </template>

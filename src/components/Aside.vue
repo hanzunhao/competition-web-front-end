@@ -1,16 +1,4 @@
 <template>
-    <!-- 
-        侧边栏菜单组件
-        该组件包含三个导航项，每个项对应一个路由页面。通过点击不同的菜单项，会触发相应的路由跳转， 
-        同时动态更新选中的菜单项，使其与当前路由同步高亮显示。
-
-        功能说明：
-        - homeHandle: 跳转到首页 (Home)
-        - page2Handle: 跳转到第二页 (Page_2)
-        - page3Handle: 跳转到第三页 (Page_3)
-        - page4Handle: 跳转到第四页 (Page_4)
-
-    -->
     <el-menu :default-active="activeRoute" class="aside-menu">
         <el-menu-item index="1" @click="homeHandle">
             <el-icon>
@@ -43,29 +31,14 @@
 import { useRouter } from 'vue-router';
 import { ref, watchEffect } from 'vue';
 
-// 获取路由实例
 const router = useRouter();
-
-// 当前选中的路由名称
 const activeRoute = ref('1');
 
-// 路由跳转的处理函数
-const homeHandle = () => {
-    router.push({ name: 'Home' });
-};
+const homeHandle = () => router.push({ name: 'Home' });
+const page2Handle = () => router.push({ name: 'Page_2' });
+const page3Handle = () => router.push({ name: 'Page_3' });
+const page4Handle = () => router.push({ name: 'Page_4' });
 
-const page2Handle = () => {
-    router.push({ name: 'Page_2' });
-};
-
-const page3Handle = () => {
-    router.push({ name: 'Page_3' });
-};
-const page4Handle = () => {
-    router.push({ name: 'Page_4' });
-};
-
-// 监听当前路由的变化，动态更新高亮菜单项
 watchEffect(() => {
     const currentRoute = router.currentRoute.value.name;
     if (currentRoute === 'Home') activeRoute.value = '1';
@@ -78,6 +51,5 @@ watchEffect(() => {
 <style scoped>
 .aside-menu {
     height: 100%;
-    /* 确保 el-menu 占满 el-aside 的高度 */
 }
 </style>
