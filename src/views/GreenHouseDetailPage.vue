@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+import api from '../api';
 import { ref, onMounted, onUnmounted } from 'vue';
 import router from '../router';
 import GreenHouseDetailLayout from '../layout/GreenHouseDetailLayout.vue';
@@ -70,27 +71,17 @@ const back = () => {
     router.push({ name: 'Home' });
 };
 
+const handleVideoMessage = (event) => {
+            if (videoElement.value) {
+                const blob = new Blob([event.data], { type: 'image/jpeg' });
+                const url = URL.createObjectURL(blob);
+                videoElement.value.src = url;
+            }
+        };
+
 onMounted(async () => {
     await greenHouseStore.fetchGreenHouseForms();
-
-    socket = new WebSocket(`ws://localhost:8080/video-stream`);
-    socket.binaryType = 'arraybuffer';
-
-    socket.onmessage = (event) => {
-        if (videoElement.value) {
-            const blob = new Blob([event.data], { type: 'image/jpeg' });
-            const url = URL.createObjectURL(blob);
-            videoElement.value.src = url;
-        }
-    };
-
-    socket.onopen = () => {
-        console.log('WebSocket connection established.');
-    };
-
-    socket.onclose = () => {
-        console.log('WebSocket connection closed.');
-    };
+    socket=api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
 });
 
 onUnmounted(() => {
