@@ -28,11 +28,15 @@
             <div v-if="noMore" class="no-more">没有更多数据了</div>
         </div>
         <div v-else class="loading-message">数据加载中...</div>
+
+        <div class="button-content">
+            <el-button type="primary">点击按钮选择要搬运的花盆</el-button>
+        </div>
     </el-drawer>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
 import { Loading } from '@element-plus/icons-vue';
@@ -49,7 +53,12 @@ const pageSize = 8;
 watch(
     () => visibleStore.flowerPotDrawerVisible,
     (newVal) => {
-        if (newVal) fetchFlowerPotData();
+        if (newVal) {
+            fetchFlowerPotData();
+        } else {
+            potRows.value = [];
+            noMore.value = false;
+        }
     }
 );
 
@@ -59,16 +68,27 @@ onMounted(() => {
 
 const handleClose = () => {
     visibleStore.flowerPotDrawerVisible = false;
+    potRows.value = [];
+    noMore.value = false;
 };
 
 const fetchFlowerPotData = async () => {
     await flowerPotStore.fetchFlowerPotForms();
-    potNum.value = flowerPotStore.list[visibleStore.greenhouseId].length;
+    const flowerPots = flowerPotStore.list[visibleStore.greenhouseId];
+    potNum.value = flowerPots.length;
+
+    const filteredPotIds = [];
+    for (let i = 0; i < potNum.value; i++) {
+        if (flowerPots[i]?.haveFlower) {
+            filteredPotIds.push(i);
+        }
+    }
+
     const rows = [];
-    for (let i = 0; i < potNum.value; i += 4) {
+    for (let i = 0; i < filteredPotIds.length; i += 4) {
         const row = [];
-        for (let j = 0; j < 4 && i + j < potNum.value; j++) {
-            row.push(i + j);
+        for (let j = 0; j < 4 && i + j < filteredPotIds.length; j++) {
+            row.push(filteredPotIds[i + j]);
         }
         rows.push(row);
     }
@@ -81,10 +101,13 @@ const loadMore = async () => {
     setTimeout(() => {
         const newRows = [];
         const startIndex = potRows.value.length * 4;
-        for (let i = startIndex; i < startIndex + pageSize && i < potNum.value; i += 4) {
+        const flowerPots = flowerPotStore.list[visibleStore.greenhouseId];
+        const filteredPotIds = Object.keys(flowerPots).filter(id => flowerPots[id]?.haveFlower);
+
+        for (let i = startIndex; i < startIndex + pageSize && i < filteredPotIds.length; i += 4) {
             const row = [];
-            for (let j = 0; j < 4 && i + j < potNum.value; j++) {
-                row.push(i + j);
+            for (let j = 0; j < 4 && i + j < filteredPotIds.length; j++) {
+                row.push(filteredPotIds[i + j]);
             }
             newRows.push(row);
         }
@@ -96,6 +119,10 @@ const loadMore = async () => {
         loading.value = false;
     }, 1000);
 };
+
+onUnmounted(() => {
+    visibleStore.flowerPotDrawerVisible = false;
+})
 </script>
 
 <style scoped>
@@ -160,5 +187,13 @@ const loadMore = async () => {
     align-items: center;
     font-size: 16px;
     font-weight: bold;
+}
+
+.button-content {
+    margin: 1%;
+    height: 11%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

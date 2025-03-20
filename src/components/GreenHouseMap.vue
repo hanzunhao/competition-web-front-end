@@ -1,27 +1,37 @@
 <template>
     <div id="mapContainer">
         <el-card id="map" @dblclick="handleDoubleClick" shadow="hover">
-            <el-row :gutter="0" v-for="(row, rowIndex) in 5" :key="rowIndex" class="grid-row" justify="center">
-                <el-col :span="3" v-for="(col, colIndex) in 7" :key="colIndex" class="grid-col">
-                    <div v-if="isVisible(rowIndex * 7 + colIndex + 1)" class="grid-item">
-                        <img :src="FlowerPot" class="flower-pot" />
-                        <div class="number-overlay">
-                            {{ getNewNumber(rowIndex * 7 + colIndex + 1) }}
+            <template v-if="flowerPotStore.list[visibleStore.greenhouseId]">
+                <el-row :gutter="0" v-for="(row, rowIndex) in 5" :key="rowIndex" class="grid-row" justify="center">
+                    <el-col :span="3" v-for="(col, colIndex) in 7" :key="colIndex" class="grid-col">
+                        <div v-if="isVisible(rowIndex * 7 + colIndex + 1)" class="grid-item">
+                            <img :src="FlowerPot" class="flower-pot"
+                                v-if="flowerPotStore.list[visibleStore.greenhouseId][getNewNumber(rowIndex * 7 + colIndex + 1) - 1]?.haveFlower" />
+                            <img :src="EmptyPot" class="flower-pot" v-else />
+                            <div class="number-overlay">
+                                {{ getNewNumber(rowIndex * 7 + colIndex + 1) }}
+                            </div>
                         </div>
-                    </div>
-                    <div v-else class="grid-item hidden"></div>
-                </el-col>
-            </el-row>
+                        <div v-else class="grid-item hidden"></div>
+                    </el-col>
+                </el-row>
+            </template>
+            <template v-else>
+                <div class="loading-message">加载中...</div>
+            </template>
         </el-card>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import FlowerPot from '../assets/FlowerPot.svg';
+import EmptyPot from '../assets/EmptyPot.svg'
+import { FlowerPotStore } from '../stores/FlowerPotStore';
 
 const visibleStore = VisibleStore();
+const flowerPotStore = FlowerPotStore();
 const visibleNumbers = [3, 4, 5, 10, 11, 12, 15, 16, 20, 21, 22, 23, 27, 28, 29, 30, 34, 35];
 const newNumberMap = ref({});
 
@@ -32,6 +42,10 @@ visibleNumbers.forEach((number, index) => {
 const isVisible = (number) => visibleNumbers.includes(number);
 const getNewNumber = (number) => newNumberMap.value[number];
 const handleDoubleClick = () => visibleStore.flowerPotDrawerVisible = true;
+
+onMounted(async () => {
+    await flowerPotStore.fetchFlowerPotForms();
+});
 </script>
 
 <style scoped>

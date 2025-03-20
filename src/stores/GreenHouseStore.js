@@ -38,7 +38,6 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
         async fetchGreenHouseForms() {
             try {
                 const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
-                console.log('All Greenhouse Data:', allGreenHouseForm);
                 this.list = allGreenHouseForm;
             } catch (error) {
                 console.error('获取大棚数据失败:', error);
