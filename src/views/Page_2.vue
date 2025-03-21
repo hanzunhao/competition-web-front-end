@@ -25,7 +25,7 @@
 
 <script setup>
 import MainLayout from '../layout/MainLayout.vue';
-import WarningTable from '../components/WarningTable.vue';
+import WarningTable from '../components/LogTable.vue';
 import DailyTaskTimeLine from '../components/DailyTaskTimeLine.vue';
 import SegmentedController from '../components/SegmentedController.vue';
 import TaskDrawer from '../components/TaskDrawer.vue';

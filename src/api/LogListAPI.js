@@ -1,16 +1,16 @@
 import request from '../utils/request';
 
-const getAllWarning = async () => {
+const getAllLog = async () => {
     try {
-        const response = await request.get('/api/page_2/warning/selectAll');
+        const response = await request.get('/api/page_2/log/selectAll');
         return response.data;
     } catch (error) {
         return [];
     }
 };
-const deleteWarning = async (ids) => {
+const deleteLog = async (ids) => {
     try {
-        await request.delete('/api/page_2/warning/delete', {
+        await request.delete('/api/page_2/log/delete', {
             params: { ids }, // 将 ids 作为 URL 参数传递
             paramsSerializer: (params) => {
                 // 将数组转换为 ids=1&ids=2 格式
@@ -31,6 +31,6 @@ const deleteWarning = async (ids) => {
 };
 
 export default {
-    getAllWarning,
-    deleteWarning
+    getAllLog,
+    deleteLog
 };

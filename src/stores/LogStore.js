@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import api from '../api';
 
-export const WarningHistoryStore = defineStore("WarningHistoryStore", {
+export const LogStore = defineStore("LogStore", {
     state: () => ({
         list: []
     }),
@@ -10,21 +10,19 @@ export const WarningHistoryStore = defineStore("WarningHistoryStore", {
         formattedList: (state) => {
             return state.list.map(item => ({
                 ...item,
-                date: formatDate(item.date) // 格式化日期
+                date: formatDate(item.date), // 格式化日期
+                isCompleted: item.isCompleted ? "已完成" : "未完成" // 将布尔值转换为字符串
             }));
         }
     },
     actions: {
-        async getAllWarning() {
-            const allWarning = await api.WarningListAPI.getAllWarning();
-            console.log('All Warning Data:', allWarning);
-            this.list = allWarning;
+        async getAllLog() {
+            const allLog = await api.LogListAPI.getAllLog();
+            console.log('All Log Data:', allLog);
+            this.list = allLog;
         },
-        async deleteWarning(ids) {
-            await api.WarningListAPI.deleteWarning(ids);
-        },
-        logState() {
-            console.log(this.list);
+        async deleteLog(ids) {
+            await api.LogListAPI.deleteLog(ids);
         }
     }
 });

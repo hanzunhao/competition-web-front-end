@@ -72,16 +72,16 @@ const back = () => {
 };
 
 const handleVideoMessage = (event) => {
-            if (videoElement.value) {
-                const blob = new Blob([event.data], { type: 'image/jpeg' });
-                const url = URL.createObjectURL(blob);
-                videoElement.value.src = url;
-            }
-        };
+    if (videoElement.value) {
+        const blob = new Blob([event.data], { type: 'image/jpeg' });
+        const url = URL.createObjectURL(blob);
+        videoElement.value.src = url;
+    }
+};
 
 onMounted(async () => {
     await greenHouseStore.fetchGreenHouseForms();
-    socket=api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
+    socket = api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
 });
 
 onUnmounted(() => {

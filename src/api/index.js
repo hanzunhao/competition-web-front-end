@@ -1,12 +1,12 @@
 import GreenHouseAPI from "./GreenHouseAPI";
-import WarningListAPI from "./WarningListAPI";
+import LogListAPI from "./LogListAPI";
 import LoginAPI from "./LoginAPI";
 import FlowerPotAPI from "./FlowerPotAPI";
 import VideoStreamAPI from "./VideoStreamAPI";
 
 export default {
     GreenHouseAPI,
-    WarningListAPI,
+    LogListAPI,
     LoginAPI,
     FlowerPotAPI,
     VideoStreamAPI,
