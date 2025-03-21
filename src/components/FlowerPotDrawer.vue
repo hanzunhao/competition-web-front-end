@@ -7,7 +7,7 @@
             <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" class="pot-row">
                 <el-col :span="6" v-for="potId in row" :key="potId" class="pot-col">
                     <div class="pot" :id="potId">
-                        <FlowerPot>
+                        <FlowerPot :id="flowerPotStore.list[visibleStore.greenhouseId][potId]?.id">
                             <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
                             <template #soilTemperature>{{
                                 flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature }}℃
@@ -30,7 +30,10 @@
         <div v-else class="loading-message">数据加载中...</div>
 
         <div class="button-content">
-            <el-button type="primary">点击按钮选择要搬运的花盆</el-button>
+            <el-button v-if="visibleStore.selectOrPrimaryButtonVisible" type="primary"
+                @click="selectClickHandler">选择花盆</el-button>
+            <el-button v-else type="primary" @click="primaryClickHandler">确认搬运</el-button>
+            <el-button v-if="visibleStore.cancelButtonVisible" type="plain" @click="cancelClickHandler">取消搬运</el-button>
         </div>
     </el-drawer>
 </template>
@@ -50,6 +53,28 @@ const loading = ref(false);
 const noMore = ref(false);
 const pageSize = 8;
 
+const selectClickHandler = () => {
+    visibleStore.showFlowerPotHeader = true;
+    visibleStore.cancelButtonVisible = true;
+    visibleStore.selectOrPrimaryButtonVisible = false;
+}
+
+const primaryClickHandler = async() => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelButtonVisible = false;
+    visibleStore.selectOrPrimaryButtonVisible = true;
+    await flowerPotStore.deleteSelectedFlowerPots();
+    flowerPotStore.clearTransportedIdList();
+    await fetchFlowerPotData();
+}
+
+const cancelClickHandler = () => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelButtonVisible = false;
+    visibleStore.selectOrPrimaryButtonVisible = true;
+    flowerPotStore.clearTransportedIdList();
+}
+
 watch(
     () => visibleStore.flowerPotDrawerVisible,
     (newVal) => {
@@ -58,6 +83,10 @@ watch(
         } else {
             potRows.value = [];
             noMore.value = false;
+            visibleStore.showFlowerPotHeader = false;
+            visibleStore.cancelButtonVisible = false;
+            visibleStore.selectOrPrimaryButtonVisible = true;
+            flowerPotStore.clearTransportedIdList();
         }
     }
 );

@@ -5,6 +5,9 @@ const store = TimeLineStore()
 
 export const VisibleStore = defineStore("VisibleStore", {
     state: () => ({
+        selectOrPrimaryButtonVisible: true,
+        cancelButtonVisible: false,
+        showFlowerPotHeader: false,
         taskDrawerVisible: false,
         flowerPotDrawerVisible: false,
         day: Object.keys(store.taskAndTime)[0],
