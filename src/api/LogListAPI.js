@@ -8,6 +8,7 @@ const getAllLog = async () => {
         return [];
     }
 };
+
 const deleteLog = async (ids) => {
     try {
         await request.delete('/api/page_2/log/delete', {
@@ -30,7 +31,23 @@ const deleteLog = async (ids) => {
     }
 };
 
+const insertLog = async (name, isCompleted) => {
+    try {
+        const log = {
+            id: 1,
+            date: null,
+            name: name,
+            isCompleted: isCompleted
+        };
+        await request.post('/api/page_2/log/insert', log);
+        console.log('插入成功');
+    } catch (error) {
+        console.error('插入失败:', error);
+    }
+};
+
 export default {
     getAllLog,
-    deleteLog
+    deleteLog,
+    insertLog
 };

@@ -43,9 +43,11 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
 import { Loading } from '@element-plus/icons-vue';
+import { LogStore } from '../stores/LogStore';
 
 const visibleStore = VisibleStore();
 const flowerPotStore = FlowerPotStore();
+const logStore=LogStore();
 
 const potNum = ref(0);
 const potRows = ref([]);
@@ -63,15 +65,21 @@ const primaryClickHandler = async() => {
     visibleStore.showFlowerPotHeader = false;
     visibleStore.cancelButtonVisible = false;
     visibleStore.selectOrPrimaryButtonVisible = true;
+
+    await logStore.insertLog('搬运花盆',false);
+
     await flowerPotStore.deleteSelectedFlowerPots();
     flowerPotStore.clearTransportedIdList();
     await fetchFlowerPotData();
+
+    await logStore.insertLog('搬运花盆',true);
 }
 
 const cancelClickHandler = () => {
     visibleStore.showFlowerPotHeader = false;
     visibleStore.cancelButtonVisible = false;
     visibleStore.selectOrPrimaryButtonVisible = true;
+
     flowerPotStore.clearTransportedIdList();
 }
 

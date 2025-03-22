@@ -7,9 +7,9 @@
                     <GreenhouseCard @dblclick="detailHandle(greenhouseId)"
                         :class="{ 'pest-warning': hasPestWarning(greenhouseId) }">
                         <template #id>{{ greenhouseId + 1 }}</template>
-                        <template #flower>{{ greenhouseStroe.list[greenhouseId]?.flowerName }}</template>
-                        <template #temperature>{{ greenhouseStroe.list[greenhouseId]?.airTemperature }}℃</template>
-                        <template #wetness>{{ greenhouseStroe.list[greenhouseId]?.airHumidity }}%</template>
+                        <template #flower>{{ greenhouseStore.list[greenhouseId]?.flowerName }}</template>
+                        <template #temperature>{{ greenhouseStore.list[greenhouseId]?.airTemperature }}℃</template>
+                        <template #wetness>{{ greenhouseStore.list[greenhouseId]?.airHumidity }}%</template>
                         <template #pest>{{ hasPestWarning(greenhouseId) ? '有' : '无' }}</template>
                     </GreenhouseCard>
                 </div>
@@ -34,7 +34,7 @@ const greenhouseRows = [
     [4, 5, 6, 7]
 ];
 
-const greenhouseStroe = GreenHouseStore();
+const greenhouseStore = GreenHouseStore();
 
 const visibleStore = VisibleStore()
 
@@ -42,12 +42,12 @@ const jwtStore = JwtStore();
 
 
 // 确保数据在组件挂载时加载
-onMounted(() => {
+onMounted(async () => {
     if (!jwtStore.jwt) {
         router.push({ name: 'Login' })
     } else {
         visibleStore.greenhouseId = null;
-        greenhouseStroe.fetchGreenHouseForms();
+        await greenhouseStore.fetchGreenHouseForms();
     }
 });
 
@@ -58,7 +58,7 @@ const detailHandle = (id) => {
 };
 
 const hasPestWarning = function (id) {
-    const hasPest = greenhouseStroe.list[id]?.pestName !== '无'
+    const hasPest = greenhouseStore.list[id]?.pestName !== '无'
     return hasPest;
 };
 </script>

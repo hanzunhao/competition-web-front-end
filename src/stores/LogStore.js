@@ -23,6 +23,9 @@ export const LogStore = defineStore("LogStore", {
         },
         async deleteLog(ids) {
             await api.LogListAPI.deleteLog(ids);
+        },
+        async insertLog(name,isCompleted){
+            await api.LogListAPI.insertLog(name,isCompleted);
         }
     }
 });
