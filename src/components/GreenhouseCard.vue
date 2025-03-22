@@ -6,7 +6,12 @@
                     <slot name="id"></slot>
                 </el-tag>
             </span>
-            <slot name="flower"></slot>
+            <span>
+                <slot name="flower"></slot>
+            </span>
+            <span class="number-span">
+                <slot name="number"></slot>
+            </span>
         </template>
         <el-descriptions :column="1" :size="size" border>
             <el-descriptions-item>
@@ -62,5 +67,14 @@ span {
 .el-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.number-span {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    float: right;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 </style>

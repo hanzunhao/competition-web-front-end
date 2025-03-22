@@ -1,5 +1,4 @@
 <template>
-    <!-- 页面一 -->
     <MainLayout>
         <el-row :gutter="20" v-for="(row, rowIndex) in greenhouseRows" :key="rowIndex">
             <el-col :span="6" v-for="greenhouseId in row" :key="greenhouseId">
@@ -8,6 +7,8 @@
                         :class="{ 'pest-warning': hasPestWarning(greenhouseId) }">
                         <template #id>{{ greenhouseId + 1 }}</template>
                         <template #flower>{{ greenhouseStore.list[greenhouseId]?.flowerName }}</template>
+                        <template #number>{{ flowerPotStore.getFlowerNumByGreenHouseId(greenhouseId) }} / {{
+                            flowerPotStore.getListLenByGreenHouseId(greenhouseId) }} 朵</template>
                         <template #temperature>{{ greenhouseStore.list[greenhouseId]?.airTemperature }}℃</template>
                         <template #wetness>{{ greenhouseStore.list[greenhouseId]?.airHumidity }}%</template>
                         <template #pest>{{ hasPestWarning(greenhouseId) ? '有' : '无' }}</template>
@@ -23,9 +24,10 @@ import MainLayout from '../layout/MainLayout.vue';
 import GreenhouseCard from '../components/GreenhouseCard.vue';
 import router from '../router';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import { JwtStore } from '../stores/jwtStore';
+import { FlowerPotStore } from '../stores/FlowerPotStore';
 
 
 // 定义一个二维数组，表示每行的温室ID
@@ -35,10 +37,10 @@ const greenhouseRows = [
 ];
 
 const greenhouseStore = GreenHouseStore();
-
 const visibleStore = VisibleStore()
-
 const jwtStore = JwtStore();
+const flowerPotStore = FlowerPotStore();
+
 
 
 // 确保数据在组件挂载时加载
@@ -48,6 +50,7 @@ onMounted(async () => {
     } else {
         visibleStore.greenhouseId = null;
         await greenhouseStore.fetchGreenHouseForms();
+        await flowerPotStore.fetchFlowerPotForms();
     }
 });
 

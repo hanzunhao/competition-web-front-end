@@ -33,13 +33,21 @@ export const FlowerPotStore = defineStore('FlowerPotStore', {
         clearTransportedIdList() {
             this.transportedIdList = [];
         },
-        // 向后端传递transportedIdList用于删除花盆数据
-        async deleteSelectedFlowerPots() {
+        // 向后端传递温室ID和transportedIdList用于删除花盆数据
+        async deleteSelectedFlowerPots(greenHouseId) {
             try {
-                await api.FlowerPotAPI.deleteFlowerPotByIdList(this.transportedIdList);
+                await api.FlowerPotAPI.deleteFlowerPotByIdList(greenHouseId, this.transportedIdList);
             } catch (error) {
                 console.error('删除被搬运的花盆失败:', error);
             }
         },
+        // 获取list总长度
+        getListLenByGreenHouseId(id) {
+            return this.list[id] ? this.list[id].length : 18;
+        },
+        // 获取list中指定id的haveFlower属性为true的元素的个数
+        getFlowerNumByGreenHouseId(id) {
+            return this.list[id] ? this.list[id].filter(item => item.haveFlower === true).length : 18;
+        }
     }
 });

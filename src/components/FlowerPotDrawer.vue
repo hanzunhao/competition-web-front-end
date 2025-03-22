@@ -3,6 +3,14 @@
         <template #header>
             <div class="custom-header">花盆具体数据</div>
         </template>
+
+        <div class="button-content">
+            <el-button v-if="visibleStore.selectOrPrimaryButtonVisible" type="primary"
+                @click="selectClickHandler">选择花盆</el-button>
+            <el-button v-else type="primary" @click="primaryClickHandler">确认搬运</el-button>
+            <el-button v-if="visibleStore.cancelButtonVisible" type="plain" @click="cancelClickHandler">取消搬运</el-button>
+        </div>
+
         <div v-if="flowerPotStore.list[visibleStore.greenhouseId]" class="drawer-content" v-infinite-scroll="loadMore">
             <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" class="pot-row">
                 <el-col :span="6" v-for="potId in row" :key="potId" class="pot-col">
@@ -28,13 +36,7 @@
             <div v-if="noMore" class="no-more">没有更多数据了</div>
         </div>
         <div v-else class="loading-message">数据加载中...</div>
-
-        <div class="button-content">
-            <el-button v-if="visibleStore.selectOrPrimaryButtonVisible" type="primary"
-                @click="selectClickHandler">选择花盆</el-button>
-            <el-button v-else type="primary" @click="primaryClickHandler">确认搬运</el-button>
-            <el-button v-if="visibleStore.cancelButtonVisible" type="plain" @click="cancelClickHandler">取消搬运</el-button>
-        </div>
+        
     </el-drawer>
 </template>
 
@@ -68,7 +70,7 @@ const primaryClickHandler = async() => {
 
     await logStore.insertLog('搬运花盆',false);
 
-    await flowerPotStore.deleteSelectedFlowerPots();
+    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId);
     flowerPotStore.clearTransportedIdList();
     await fetchFlowerPotData();
 
@@ -231,6 +233,8 @@ onUnmounted(() => {
     height: 11%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;    
+    display:flex;
+    justify-content: left;
 }
 </style>
