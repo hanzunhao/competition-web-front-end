@@ -56,7 +56,7 @@ onMounted(async () => {
 
     intervalId = setInterval(async () => {
         await greenhouseStore.fetchGreenHouseForms();
-    }, 2000); 
+    }, 5000); 
 
 });
 

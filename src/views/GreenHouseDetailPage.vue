@@ -57,6 +57,7 @@ import GreenHouseDetailLayout from '../layout/GreenHouseDetailLayout.vue';
 import GreenHouseMap from '../components/GreenHouseMap.vue';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { VisibleStore } from '../stores/VisibleStore';
+import { FlowerPotStore } from '../stores/FlowerPotStore';
 import Chart_1 from '../components/Chart_1.vue';
 import Chart_2 from '../components/Chart_2.vue';
 import Chart_3 from '../components/Chart_3.vue';
@@ -64,6 +65,7 @@ import Chart_4 from '../components/Chart_4.vue';
 
 const greenHouseStore = GreenHouseStore();
 const visibleStore = VisibleStore();
+const flowerPotStore = FlowerPotStore();
 const videoElement = ref(null);
 let socket = null;
 let intervalId = null;
@@ -85,7 +87,8 @@ onMounted(async () => {
 
     intervalId = setInterval(async () => {
         await greenHouseStore.fetchGreenHouseForms();
-    }, 2000);
+        await flowerPotStore.fetchFlowerPotForms();
+    }, 5000);
 
     socket = api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
 });

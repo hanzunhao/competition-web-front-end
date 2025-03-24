@@ -36,7 +36,7 @@
             <div v-if="noMore" class="no-more">没有更多数据了</div>
         </div>
         <div v-else class="loading-message">数据加载中...</div>
-        
+
     </el-drawer>
 </template>
 
@@ -49,7 +49,7 @@ import { LogStore } from '../stores/LogStore';
 
 const visibleStore = VisibleStore();
 const flowerPotStore = FlowerPotStore();
-const logStore=LogStore();
+const logStore = LogStore();
 
 const potNum = ref(0);
 const potRows = ref([]);
@@ -63,18 +63,18 @@ const selectClickHandler = () => {
     visibleStore.selectOrPrimaryButtonVisible = false;
 }
 
-const primaryClickHandler = async() => {
+const primaryClickHandler = async () => {
     visibleStore.showFlowerPotHeader = false;
     visibleStore.cancelButtonVisible = false;
     visibleStore.selectOrPrimaryButtonVisible = true;
 
-    await logStore.insertLog('搬运花盆',false);
+    await logStore.insertLog('搬运花盆', false);
 
     await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId);
     flowerPotStore.clearTransportedIdList();
     await fetchFlowerPotData();
 
-    await logStore.insertLog('搬运花盆',true);
+    await logStore.insertLog('搬运花盆', true);
 }
 
 const cancelClickHandler = () => {
@@ -233,8 +233,8 @@ onUnmounted(() => {
     height: 11%;
     display: flex;
     align-items: center;
-    justify-content: center;    
-    display:flex;
+    justify-content: center;
+    display: flex;
     justify-content: left;
 }
 </style>
