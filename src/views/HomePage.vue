@@ -24,7 +24,7 @@ import MainLayout from '../layout/MainLayout.vue';
 import GreenhouseCard from '../components/GreenhouseCard.vue';
 import router from '../router';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import { JwtStore } from '../stores/jwtStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
@@ -40,6 +40,7 @@ const greenhouseStore = GreenHouseStore();
 const visibleStore = VisibleStore()
 const jwtStore = JwtStore();
 const flowerPotStore = FlowerPotStore();
+let intervalId = null;
 
 
 
@@ -52,7 +53,18 @@ onMounted(async () => {
         await greenhouseStore.fetchGreenHouseForms();
         await flowerPotStore.fetchFlowerPotForms();
     }
+
+    intervalId = setInterval(async () => {
+        await greenhouseStore.fetchGreenHouseForms();
+    }, 2000); 
+
 });
+
+onUnmounted(() => {
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+})
 
 // 从卡片跳转到大棚详情页面
 const detailHandle = (id) => {

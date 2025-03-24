@@ -66,6 +66,7 @@ const greenHouseStore = GreenHouseStore();
 const visibleStore = VisibleStore();
 const videoElement = ref(null);
 let socket = null;
+let intervalId = null;
 
 const back = () => {
     router.push({ name: 'Home' });
@@ -81,12 +82,21 @@ const handleVideoMessage = (event) => {
 
 onMounted(async () => {
     await greenHouseStore.fetchGreenHouseForms();
+
+    intervalId = setInterval(async () => {
+        await greenHouseStore.fetchGreenHouseForms();
+    }, 2000);
+
     socket = api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
 });
 
 onUnmounted(() => {
     if (socket) {
         socket.close();
+    }
+
+    if (intervalId) {
+        clearInterval(intervalId);
     }
 });
 </script>
