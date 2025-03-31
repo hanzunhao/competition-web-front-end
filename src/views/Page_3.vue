@@ -36,38 +36,38 @@ import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
 
 const props = defineProps({
-  content: String
+    content: String
 })
 
 const md = new MarkdownIt({
-  html: false,
-  linkify: true,
-  typographer: true,
-  breaks: true
+    html: false,
+    linkify: true,
+    typographer: true,
+    breaks: true
 })
 
 // 安全渲染函数
 const renderMarkdown = (content) => {
-  if (!content) return ''
-  
-  // 预处理：修复###问题
-  const fixedContent = content
-    .replace(/^(#{1,6})\s+/gm, (match, p1) => p1 + ' ') // 规范标题格式
-    .replace(/\r\n/g, '\n') // 统一换行符
-  
-  // 转换Markdown
-  const html = md.render(fixedContent)
-  
-  // 安全过滤
-  return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: [
-      'h1','h2','h3','h4','h5','h6',
-      'p','br','pre','code','blockquote',
-      'ul','ol','li','strong','em','hr',
-      'a','img','table','thead','tbody','tr','th','td'
-    ],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target']
-  })
+    if (!content) return ''
+
+    // 预处理：修复###问题
+    const fixedContent = content
+        .replace(/^(#{1,6})\s+/gm, (match, p1) => p1 + ' ') // 规范标题格式
+        .replace(/\r\n/g, '\n') // 统一换行符
+
+    // 转换Markdown
+    const html = md.render(fixedContent)
+
+    // 安全过滤
+    return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: [
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'p', 'br', 'pre', 'code', 'blockquote',
+            'ul', 'ol', 'li', 'strong', 'em', 'hr',
+            'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+        ],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target']
+    })
 }
 const userInput = ref('');
 const messages = ref([]);
@@ -215,7 +215,7 @@ watch(messages, scrollToBottom, { deep: true });
 
 .chat-container {
     width: 100%;
-    height: 90vh;
+    height: 100%;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
     box-shadow: var(--shadow);
@@ -249,7 +249,7 @@ watch(messages, scrollToBottom, { deep: true });
 }
 
 .chat-message {
-    max-width: 75%;
+    max-width: 95%;
     padding: 16px 20px;
     border-radius: 20px;
     line-height: 1.5;
@@ -272,6 +272,7 @@ watch(messages, scrollToBottom, { deep: true });
     align-self: flex-start;
     border-bottom-left-radius: 4px;
     box-shadow: var(--shadow);
+    width: 90%;
 }
 
 .chat-input {
@@ -379,32 +380,18 @@ watch(messages, scrollToBottom, { deep: true });
     }
 }
 
-@media (max-width: 640px) {
-    body {
-        padding: 10px;
-    }
-
-    .chat-container {
-        height: 95vh;
-        border-radius: 16px;
-    }
-
-    .chat-message {
-        max-width: 85%;
-    }
-}
-
 /* 基础样式 */
 .markdown-content {
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.6;
-  color: inherit; /* 继承父级颜色 */
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.6;
+    color: inherit;
+    /* 继承父级颜色 */
 }
 
 /* 深度选择器使用新语法 */
 .markdown-content :deep(p) {
-  margin: 0.5em 0;
+    margin: 0.5em 0;
 }
 
 .markdown-content :deep(h1),
@@ -413,94 +400,92 @@ watch(messages, scrollToBottom, { deep: true });
 .markdown-content :deep(h4),
 .markdown-content :deep(h5),
 .markdown-content :deep(h6) {
-  margin: 1em 0 0.5em;
-  font-weight: bold;
-  color: inherit;
+    margin: 1em 0 0.5em;
+    font-weight: bold;
+    color: inherit;
 }
 
 .markdown-content :deep(h1) {
-  font-size: 1.5em;
-  border-bottom: 1px solid var(--border-color, #eee);
-  padding-bottom: 0.3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-color, #eee);
+    padding-bottom: 0.3em;
 }
 
 .markdown-content :deep(h2) {
-  font-size: 1.3em;
-  border-bottom: 1px solid var(--border-color, #eee);
-  padding-bottom: 0.3em;
+    font-size: 1.3em;
+    border-bottom: 1px solid var(--border-color, #eee);
+    padding-bottom: 0.3em;
 }
 
 .markdown-content :deep(code) {
-  font-family: monospace;
-  background-color: var(--code-bg, rgba(175, 184, 193, 0.2));
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
+    font-family: monospace;
+    background-color: var(--code-bg, rgba(175, 184, 193, 0.2));
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
 }
 
 .markdown-content :deep(pre) {
-  background-color: var(--pre-bg, #f6f8fa);
-  padding: 1em;
-  border-radius: 6px;
-  overflow: auto;
+    background-color: var(--pre-bg, #f6f8fa);
+    padding: 1em;
+    border-radius: 6px;
+    overflow: auto;
 }
 
 .markdown-content :deep(pre code) {
-  background-color: transparent;
-  padding: 0;
+    background-color: transparent;
+    padding: 0;
 }
 
 .markdown-content :deep(blockquote) {
-  border-left: 4px solid var(--quote-border, #dfe2e5);
-  color: var(--quote-text, #6a737d);
-  padding: 0 1em;
-  margin: 0.5em 0;
+    border-left: 4px solid var(--quote-border, #dfe2e5);
+    color: var(--quote-text, #6a737d);
+    padding: 0 1em;
+    margin: 0.5em 0;
 }
 
 .markdown-content :deep(a) {
-  color: var(--link-color, #0366d6);
-  text-decoration: none;
+    color: var(--link-color, #0366d6);
+    text-decoration: none;
 }
 
 .markdown-content :deep(a:hover) {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .markdown-content :deep(ul),
 .markdown-content :deep(ol) {
-  padding-left: 2em;
-  margin: 0.5em 0;
+    padding-left: 2em;
+    margin: 0.5em 0;
 }
 
 .markdown-content :deep(table) {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 0.5em 0;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5em 0;
 }
 
 .markdown-content :deep(th),
 .markdown-content :deep(td) {
-  border: 1px solid var(--table-border, #dfe2e5);
-  padding: 6px 13px;
+    border: 1px solid var(--table-border, #dfe2e5);
+    padding: 6px 13px;
 }
 
 .markdown-content :deep(th) {
-  background-color: var(--table-header-bg, #f6f8fa);
-  font-weight: bold;
+    background-color: var(--table-header-bg, #f6f8fa);
+    font-weight: bold;
 }
 
 /* 暗色模式适配 */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --border-color: #444;
-    --code-bg: rgba(110, 118, 129, 0.4);
-    --pre-bg: #2d2d2d;
-    --quote-border: #3b434b;
-    --quote-text: #8b949e;
-    --link-color: #58a6ff;
-    --table-border: #444;
-    --table-header-bg: #161b22;
-  }
-  
-  /* 移除重复定义的 p 和 br 样式 */
+    :root {
+        --border-color: #444;
+        --code-bg: rgba(110, 118, 129, 0.4);
+        --pre-bg: #2d2d2d;
+        --quote-border: #3b434b;
+        --quote-text: #8b949e;
+        --link-color: #58a6ff;
+        --table-border: #444;
+        --table-header-bg: #161b22;
+    }
 }
 </style>
