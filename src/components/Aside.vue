@@ -10,7 +10,7 @@
             <el-icon>
                 <Notebook />
             </el-icon>
-            <span>任务与预警</span>
+            <span>任务与日志</span>
         </el-menu-item>
         <el-menu-item index="3" @click="page3Handle">
             <el-icon>
