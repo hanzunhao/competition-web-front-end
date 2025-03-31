@@ -3,42 +3,67 @@ import api from "../api";
 
 export const GreenHouseStore = defineStore('GreenHouseStore', {
     state: () => ({
-        list: [], // 存储温室数据
+        list: [], 
         keyToChinese: {
-            id: '大棚ID',
+            greenHouseId: '大棚ID',
+            storeId:'所属仓库ID',
             flowerName: '花卉名称',
+            totalPots:'花盆总数',
+            potsWithFlowers:'种植数量',
             illumination: '光照强度',
             airTemperature: '空气温度',
-            soilTemperature: '土壤温度',
+            meanSoilTemperature: '平均土壤温度',
             airHumidity: '空气湿度',
-            soilHumidity: '土壤湿度',
-            soilOrganicMatterContent: '土壤有机质含量',
-            soilPorosity: '土壤疏松性',
-            soilPH: '土壤酸碱度',
-            soilEC: '土壤可溶性盐浓度',
-            pestName: '病虫害',
+            meanSoilHumidity: '平均土壤湿度',
+            pestNames: '病虫害',
         },
         keyToUnit: {
-            id: '',
+            greenHouseId: '',
+            storeId:'',
             flowerName: '',
+            totalPots:'',
+            potsWithFlowers:'',
             illumination: ' 勒克斯（Lux）',
             airTemperature: ' 摄氏度（℃）',
-            soilTemperature: ' 摄氏度（℃）',
+            meanSoilTemperature: ' 摄氏度（℃）',
             airHumidity: ' 百分比（%）',
-            soilHumidity: ' 百分比（%）',
-            soilOrganicMatterContent: ' 百分比（%）',
-            soilPorosity: ' 百分比（%）',
-            soilPH: '',
-            soilEC: ' 毫西门子/厘米（mS/cm）',
-            pestName: '',
+            meanSoilHumidity: ' 百分比（%）',
+            pestNames: '',
         },
     }),
     actions: {
-        // 获取大棚数据
-        async fetchGreenHouseForms() {
+        // 获取所有温室数据
+        async getAllGreenHouse() {
             try {
-                const allGreenHouseForm = await api.GreenHouseAPI.getAllGreenHouseForm();
-                this.list = allGreenHouseForm;
+                const data = await api.GreenHouseAPI.getAllGreenHouse();
+                this.list = data;                
+            } catch (error) {
+                console.error('获取大棚数据失败:', error);
+            }
+        },
+        // 根据id获取温室数据
+        async getGreenHouseById(id) {
+            try {
+                const data = await api.GreenHouseAPI.getGreenHouseById(id);
+                this.list = data;
+            } catch (error) {
+                console.error('获取大棚数据失败:', error);
+            }
+        },
+        // 根据id插入温室数据
+        async insertGreenHouseById(id) {
+            try {
+                const data = await api.GreenHouseAPI.insertGreenHouseById(id);
+                this.list = data;
+            } catch (error) {
+                console.error('获取大棚数据失败:', error);
+            }
+        },
+        // 根据id删除温室数据
+        async deleteGreenHouseById(id) {
+            try {
+                const data = await api.GreenHouseAPI.deleteGreenHouseById(id);
+                this.list = data;
             } catch (error) {
                 console.error('获取大棚数据失败:', error);
             }
@@ -51,14 +76,5 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
         getUnit(key) {
             return this.keyToUnit[key] || ''; // 如果找不到对应的单位，返回空字符串
         },
-    },
-    persist: {
-        enabled: true, // 启用持久化
-        strategies: [
-            {
-                key: 'green-house-store', // 存储的 key，默认是 store 的 id
-                storage: localStorage, // 使用 localStorage
-            },
-        ],
-    },
+    }
 });

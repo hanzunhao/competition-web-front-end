@@ -8,10 +8,19 @@ export const FlowerPotStore = defineStore('FlowerPotStore', {
     }),
     actions: {
         // 获取花盆数据
-        async fetchFlowerPotForms() {
+        async getFlowerPotByGreenHouseId(greenHouseId) {
             try {
-                const allFlowerPotForm = await api.FlowerPotAPI.getAllFlowerPotForm();
-                this.list = allFlowerPotForm;
+                const data = await api.FlowerPotAPI.getFlowerPotByGreenHouseId(greenHouseId);
+                this.list = data;
+            } catch (error) {
+                console.error('获取花盆数据失败:', error);
+            }
+        },
+        // 删除花盆数据
+        async deleteFlowerPotByPotIdList(greenHouseId) {
+            try {
+                const data = await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId,this.transportedIdList);
+                this.list = data;
             } catch (error) {
                 console.error('获取花盆数据失败:', error);
             }
@@ -36,18 +45,10 @@ export const FlowerPotStore = defineStore('FlowerPotStore', {
         // 向后端传递温室ID和transportedIdList用于删除花盆数据
         async deleteSelectedFlowerPots(greenHouseId) {
             try {
-                await api.FlowerPotAPI.deleteFlowerPotByIdList(greenHouseId, this.transportedIdList);
+                await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId, this.transportedIdList);
             } catch (error) {
                 console.error('删除被搬运的花盆失败:', error);
             }
-        },
-        // 获取list总长度
-        getListLenByGreenHouseId(id) {
-            return this.list[id] ? this.list[id].length : 18;
-        },
-        // 获取list中指定id的haveFlower属性为true的元素的个数
-        getFlowerNumByGreenHouseId(id) {
-            return this.list[id] ? this.list[id].filter(item => item.haveFlower === true).length : 18;
         }
     }
 });

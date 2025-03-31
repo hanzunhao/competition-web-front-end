@@ -83,11 +83,11 @@ const handleVideoMessage = (event) => {
 };
 
 onMounted(async () => {
-    await greenHouseStore.fetchGreenHouseForms();
+    await greenHouseStore.getAllGreenHouse();
 
     intervalId = setInterval(async () => {
-        await greenHouseStore.fetchGreenHouseForms();
-        await flowerPotStore.fetchFlowerPotForms();
+        await greenHouseStore.getAllGreenHouse();
+        await flowerPotStore.getFlowerPotByGreenHouseId(visibleStore.greenhouseId + 1);
     }, 5000);
 
     socket = api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);

@@ -11,18 +11,15 @@
             <el-button v-if="visibleStore.cancelButtonVisible" type="plain" @click="cancelClickHandler">取消搬运</el-button>
         </div>
 
-        <div v-if="flowerPotStore.list[visibleStore.greenhouseId]" class="drawer-content" v-infinite-scroll="loadMore">
+        <div v-if="flowerPotStore.list" class="drawer-content" v-infinite-scroll="loadMore">
             <el-row :gutter="10" v-for="(row, rowIndex) in potRows" :key="rowIndex" class="pot-row">
                 <el-col :span="6" v-for="potId in row" :key="potId" class="pot-col">
                     <div class="pot" :id="potId">
-                        <FlowerPot :id="flowerPotStore.list[visibleStore.greenhouseId][potId]?.id">
-                            <template #id>{{ flowerPotStore.list[visibleStore.greenhouseId][potId]?.id }}</template>
-                            <template #soilTemperature>{{
-                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilTemperature }}℃
-                            </template>
-                            <template #soilHumidity>{{
-                                flowerPotStore.list[visibleStore.greenhouseId][potId]?.soilHumidity }}%
-                            </template>
+                        <FlowerPot :id="flowerPotStore.list[potId]?.id">
+                            <template #id>{{ flowerPotStore.list[potId]?.id }}</template>
+                            <template #soilTemperature>{{ flowerPotStore.list[potId]?.soilTemperature }}℃</template>
+                            <template #soilHumidity>{{ flowerPotStore.list[potId]?.soilHumidity }}%</template>
+                            <template #pestName>{{ flowerPotStore.list[potId]?.pestName }}</template>
                         </FlowerPot>
                     </div>
                 </el-col>
@@ -68,13 +65,13 @@ const primaryClickHandler = async () => {
     visibleStore.cancelButtonVisible = false;
     visibleStore.selectOrPrimaryButtonVisible = true;
 
-    await logStore.insertLog('搬运花盆', false);
+    // await logStore.insertLog('搬运花盆', false);
 
-    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId);
+    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId+1);
     flowerPotStore.clearTransportedIdList();
     await fetchFlowerPotData();
 
-    await logStore.insertLog('搬运花盆', true);
+    // await logStore.insertLog('搬运花盆', true);
 }
 
 const cancelClickHandler = () => {
@@ -112,8 +109,8 @@ const handleClose = () => {
 };
 
 const fetchFlowerPotData = async () => {
-    await flowerPotStore.fetchFlowerPotForms();
-    const flowerPots = flowerPotStore.list[visibleStore.greenhouseId];
+    await flowerPotStore.getFlowerPotByGreenHouseId(visibleStore.greenhouseId + 1);
+    const flowerPots = flowerPotStore.list;
     potNum.value = flowerPots.length;
 
     const filteredPotIds = [];
@@ -140,7 +137,7 @@ const loadMore = async () => {
     setTimeout(() => {
         const newRows = [];
         const startIndex = potRows.value.length * 4;
-        const flowerPots = flowerPotStore.list[visibleStore.greenhouseId];
+        const flowerPots = flowerPotStore.list;
         const filteredPotIds = Object.keys(flowerPots).filter(id => flowerPots[id]?.haveFlower);
 
         for (let i = startIndex; i < startIndex + pageSize && i < filteredPotIds.length; i += 4) {

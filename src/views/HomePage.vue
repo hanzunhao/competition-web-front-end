@@ -6,11 +6,11 @@
                     <GreenhouseCard @dblclick="detailHandle(greenhouseId)"
                         :class="{ 'pest-warning': hasPestWarning(greenhouseId) }">
                         <template #id>{{ greenhouseId + 1 }}</template>
-                        <template #flower>{{ greenhouseStore.list[greenhouseId]?.flowerName }}</template>
-                        <template #number>{{ flowerPotStore.getFlowerNumByGreenHouseId(greenhouseId) }} / {{
-                            flowerPotStore.getListLenByGreenHouseId(greenhouseId) }} 朵</template>
-                        <template #temperature>{{ greenhouseStore.list[greenhouseId]?.airTemperature }}℃</template>
-                        <template #wetness>{{ greenhouseStore.list[greenhouseId]?.airHumidity }}%</template>
+                        <template #flower>{{ greenHouseStore.list[greenhouseId]?.flowerName }}</template>
+                        <template #number>{{ greenHouseStore.list[greenhouseId]?.potsWithFlowers }} / {{
+                            greenHouseStore.list[greenhouseId]?.totalPots }} 朵</template>
+                        <template #temperature>{{ greenHouseStore.list[greenhouseId]?.airTemperature }}℃</template>
+                        <template #wetness>{{ greenHouseStore.list[greenhouseId]?.airHumidity }}%</template>
                         <template #pest>{{ hasPestWarning(greenhouseId) ? '有' : '无' }}</template>
                     </GreenhouseCard>
                 </div>
@@ -24,10 +24,9 @@ import MainLayout from '../layout/MainLayout.vue';
 import GreenhouseCard from '../components/GreenhouseCard.vue';
 import router from '../router';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { VisibleStore } from '../stores/VisibleStore';
 import { JwtStore } from '../stores/jwtStore';
-import { FlowerPotStore } from '../stores/FlowerPotStore';
 
 
 // 定义一个二维数组，表示每行的温室ID
@@ -36,10 +35,9 @@ const greenhouseRows = [
     [4, 5, 6, 7]
 ];
 
-const greenhouseStore = GreenHouseStore();
+const greenHouseStore = GreenHouseStore();
 const visibleStore = VisibleStore()
 const jwtStore = JwtStore();
-const flowerPotStore = FlowerPotStore();
 let intervalId = null;
 
 
@@ -50,13 +48,12 @@ onMounted(async () => {
         router.push({ name: 'Login' })
     } else {
         visibleStore.greenhouseId = null;
-        await greenhouseStore.fetchGreenHouseForms();
-        await flowerPotStore.fetchFlowerPotForms();
+        await greenHouseStore.getAllGreenHouse();
     }
 
     intervalId = setInterval(async () => {
-        await greenhouseStore.fetchGreenHouseForms();
-    }, 5000); 
+        await greenHouseStore.getAllGreenHouse();
+    }, 10000);
 
 });
 
@@ -73,8 +70,9 @@ const detailHandle = (id) => {
 };
 
 const hasPestWarning = function (id) {
-    const hasPest = greenhouseStore.list[id]?.pestName !== '无'
-    return hasPest;
+    // 安全地检查 pestNames 是否存在且有内容
+    const havePest = greenHouseStore.list[id]?.pestNames !== null;
+    return havePest;
 };
 </script>
 

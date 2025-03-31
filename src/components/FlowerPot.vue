@@ -26,6 +26,13 @@
                 </template>
                 <slot name="soilHumidity"></slot>
             </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">病虫害</div>
+                </template>
+                <slot name="pestName"></slot>
+            </el-descriptions-item>
         </el-descriptions>
     </el-card>
 </template>
@@ -37,10 +44,10 @@ import { FlowerPotStore } from '../stores/FlowerPotStore';
 const flowerPotStore = FlowerPotStore();
 const visibleStore = VisibleStore();
 const props = defineProps({
-  id: {
-    type: Number,
-    required: true,
-  },
+    id: {
+        type: Number,
+        required: true,
+    },
 });
 
 const handleCheckboxChange = (isChecked) => {

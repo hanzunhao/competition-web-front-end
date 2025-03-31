@@ -3,6 +3,7 @@ import LogListAPI from "./LogListAPI";
 import LoginAPI from "./LoginAPI";
 import FlowerPotAPI from "./FlowerPotAPI";
 import VideoStreamAPI from "./VideoStreamAPI";
+import DeepSeekAPI from "./DeepSeekAPI";
 
 export default {
     GreenHouseAPI,
@@ -10,4 +11,5 @@ export default {
     LoginAPI,
     FlowerPotAPI,
     VideoStreamAPI,
+    DeepSeekAPI
 };

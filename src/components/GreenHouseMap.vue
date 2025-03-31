@@ -6,7 +6,7 @@
                     <el-col :span="3" v-for="(col, colIndex) in 7" :key="colIndex" class="grid-col">
                         <div v-if="isVisible(rowIndex * 7 + colIndex + 1)" class="grid-item">
                             <img :src="FlowerPot" class="flower-pot"
-                                v-if="flowerPotStore.list[visibleStore.greenhouseId][getNewNumber(rowIndex * 7 + colIndex + 1) - 1]?.haveFlower" />
+                                v-if="flowerPotStore.list[getNewNumber(rowIndex * 7 + colIndex + 1) - 1]?.haveFlower" />
                             <img :src="EmptyPot" class="flower-pot" v-else />
                             <div class="number-overlay">
                                 {{ getNewNumber(rowIndex * 7 + colIndex + 1) }}
@@ -44,7 +44,7 @@ const getNewNumber = (number) => newNumberMap.value[number];
 const handleDoubleClick = () => visibleStore.flowerPotDrawerVisible = true;
 
 onMounted(async () => {
-    await flowerPotStore.fetchFlowerPotForms();
+    await flowerPotStore.getFlowerPotByGreenHouseId(visibleStore.greenhouseId + 1);
 });
 </script>
 

@@ -1,17 +1,17 @@
 import request from '../utils/request'
 
-const getAllFlowerPotForm = async () => {
+const getFlowerPotByGreenHouseId = async (greenHouseId) => {
     try {
-        const response = await request.get('/api/home/detail/pot/selectAll');
+        const response = await request.get(`/api/home/${greenHouseId}/pot`);
         return response.data;
     } catch (error) {
         return [];
     }
 }
 
-const deleteFlowerPotByIdList = async (greenHouseId, potIdList) => {
+const deleteFlowerPotByPotIdList = async (greenHouseId, potIdList) => {
     try {
-        const response = await request.delete(`/api/home/detail/pot/delete/${greenHouseId}`, {
+        const response = await request.delete(`/api/home/${greenHouseId}/pot`, {
             data: potIdList
         });
         return response.data;
@@ -21,6 +21,6 @@ const deleteFlowerPotByIdList = async (greenHouseId, potIdList) => {
 }
 
 export default {
-    getAllFlowerPotForm,
-    deleteFlowerPotByIdList
+    getFlowerPotByGreenHouseId,
+    deleteFlowerPotByPotIdList
 };
