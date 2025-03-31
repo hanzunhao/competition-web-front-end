@@ -1,89 +1,86 @@
-export default {
-    deepSeekChat: (question, onMessage, options = {}) => {
-      const {
-        onError = (err) => console.error('[DeepSeek]', err),
-        onComplete = () => {},
-        timeout = 60000,
-        headers = {},
-        baseURL = '/api/page_3'
-      } = options;
-  
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-        onError(new Error('请求超时'));
-      }, timeout);
-  
-      let isFirstChunk = true;
-      let isAborted = false;
-  
-      fetch(`${baseURL}/chat?question=${encodeURIComponent(question)}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          ...headers
-        },
-        signal: controller.signal
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP错误: ${response.status}`);
-        }
-        
-        if (!response.body) {
-          throw new Error('无可读流数据');
-        }
-  
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let buffer = '';
-  
-        const processChunk = ({ done, value }) => {
-          if (done || isAborted) {
-            clearTimeout(timeoutId);
-            if (!isAborted) onComplete();
-            return;
-          }
-  
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split(/\r?\n/);
-          buffer = lines.pop() || '';
-  
-          lines.forEach(line => {
-            if (!line.startsWith('data: ')) return;
-            
-            const data = line.substring(6).trim();
-            if (!data || data === '[DONE]') return;
-  
-            try {
-              const json = JSON.parse(data);
-              const content = json.choices?.[0]?.delta?.content;
-              if (content) {
-                onMessage(content, isFirstChunk, false);
-                isFirstChunk = false;
-              }
-            } catch (e) {
-              console.warn('[DeepSeek] JSON解析错误:', e);
-            }
-          });
-  
-          return reader.read().then(processChunk);
-        };
-  
-        return reader.read().then(processChunk);
-      })
-      .catch(err => {
-        clearTimeout(timeoutId);
-        if (!isAborted) onError(err);
-      });
-  
-      // 返回取消函数
-      return () => {
-        isAborted = true;
-        clearTimeout(timeoutId);
-        controller.abort();
-        onComplete();
-      };
+import request from '../utils/request';
+
+const chatWithDeepSeek = (question, callbacks) => {
+  // 确保URL正确拼接
+  const url = `/api/page_3/chat?question=${encodeURIComponent(question)}`;
+  console.log('Connecting to SSE:', url);
+
+  const eventSource = new EventSource(url);
+
+  eventSource.onopen = () => {
+    console.log('SSE连接已建立');
+    callbacks.onConnect?.(); // 可选：添加连接成功回调
+  };
+
+  eventSource.onmessage = (event) => {
+    try {
+      if (event.data === '[DONE]') {
+        callbacks.onDone?.();
+        eventSource.close();
+        return;
+      }
+
+      // 更安全的JSON解析
+      let content = event.data;
+      try {
+        const parsed = JSON.parse(event.data);
+        content = parsed.choices?.[0]?.delta?.content || parsed.text || event.data;
+      } catch {
+        // 保持原始内容
+      }
+      callbacks.onData?.({ text: content });
+    } catch (error) {
+      console.error('处理SSE消息出错:', error);
+      callbacks.onError?.(error);
     }
   };
+
+  eventSource.onerror = (error) => {
+    // 只有当连接异常关闭时才报错（readyState !== 2）
+    if (eventSource.readyState !== EventSource.CLOSED) {
+      console.error('SSE异常中断:', error);
+      callbacks.onError?.(error);
+    } else {
+      console.log('SSE连接正常关闭');
+    }
+    eventSource.close();
+  };
+
+  return () => {
+    console.log('关闭SSE连接');
+    eventSource.close();
+  };
+};
+
+const getChatHistory = async (userId) => {
+  try {
+    const response = await request.get('/api/page_3/history', {
+      params: { userId },
+      timeout: 10000
+    });
+    return response.data || [];
+  } catch (error) {
+    if (!axios.isCancel(error)) {
+      console.error('获取历史记录失败:', error);
+    }
+    return [];
+  }
+};
+
+const clearChatHistory = async (userId) => {
+  try {
+    await request.delete('/api/page_3/history', {
+      params: { userId }
+    });
+    return true;
+  } catch (error) {
+    console.error('清除历史记录失败:', error);
+    return false;
+  }
+};
+
+export default {
+  chatWithDeepSeek,
+  getChatHistory,
+  clearChatHistory
+}

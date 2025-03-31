@@ -88,7 +88,7 @@ onMounted(async () => {
     intervalId = setInterval(async () => {
         await greenHouseStore.getAllGreenHouse();
         await flowerPotStore.getFlowerPotByGreenHouseId(visibleStore.greenhouseId + 1);
-    }, 5000);
+    }, 10000);
 
     socket = api.VideoStreamAPI.createVideoStreamSocket(handleVideoMessage);
 });

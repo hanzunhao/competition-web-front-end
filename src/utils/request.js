@@ -69,4 +69,21 @@ instance.interceptors.response.use(
     }
 );
 
-export default instance;
+// SSE 连接封装
+const createSSEConnection = (url, params) => {
+    const eventSource = new EventSource(`${url}?${new URLSearchParams(params)}`);
+    const cancelTokenSource = axios.CancelToken.source();
+
+    return {
+        eventSource,
+        cancel: () => {
+            eventSource.close();
+            cancelTokenSource.cancel('SSE 连接已取消');
+        }
+    };
+};
+
+export default {
+    ...instance,
+    createSSEConnection
+};
