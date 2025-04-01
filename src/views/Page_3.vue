@@ -3,19 +3,28 @@
         <div class="chat-container">
             <div class="chat-messages" ref="messagesContainer">
                 <div v-for="(message, index) in messages" :key="index" class="chat-message" :class="message.sender">
-                    <!-- 修改这里：使用v-html渲染Markdown -->
                     <div v-if="message.sender === 'bot'" v-html="renderMarkdown(message.content)"
                         class="markdown-content"></div>
                     <template v-else>{{ message.content }}</template>
                 </div>
-                <div v-if="isTyping" class="typing-indicator">
+                <div v-if="isBotResponding" class="typing-indicator">
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
+                    <button @click="cancelRequest" class="stop-button">
+                        停止生成
+                    </button>
                 </div>
             </div>
+            <div class="pest-button-container">
+                <span class="pest-label">现有病虫害：</span>
+                <button v-for="(pest, index) in pestStore.list" :key="index" class="pest-button"
+                    @click="handlePestClick(pest)">
+                    {{ pest }}
+                </button>
+            </div>
             <div class="chat-input">
-                <input type="text" v-model="userInput" placeholder="输入消息..." @keydown.enter="handleSend"
+                <input type="text" v-model="userInput" placeholder="输入问题..." @keydown.enter="handleSend"
                     :disabled="isBotResponding" />
                 <button @click="handleSend" :disabled="!canSend">
                     <svg viewBox="0 0 24 24">
@@ -34,31 +43,23 @@ import api from '../api';
 import MainLayout from '../layout/MainLayout.vue';
 import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
+import { PestStore } from '../stores/PestStore';
 
-const props = defineProps({
-    content: String
-})
+const pestStore = PestStore();
 
 const md = new MarkdownIt({
     html: false,
     linkify: true,
     typographer: true,
     breaks: true
-})
+});
 
-// 安全渲染函数
 const renderMarkdown = (content) => {
-    if (!content) return ''
-
-    // 预处理：修复###问题
+    if (!content) return '';
     const fixedContent = content
-        .replace(/^(#{1,6})\s+/gm, (match, p1) => p1 + ' ') // 规范标题格式
-        .replace(/\r\n/g, '\n') // 统一换行符
-
-    // 转换Markdown
-    const html = md.render(fixedContent)
-
-    // 安全过滤
+        .replace(/^(#{1,6})\s+/gm, (match, p1) => p1 + ' ')
+        .replace(/\r\n/g, '\n');
+    const html = md.render(fixedContent);
     return DOMPurify.sanitize(html, {
         ALLOWED_TAGS: [
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -67,12 +68,12 @@ const renderMarkdown = (content) => {
             'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
         ],
         ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target']
-    })
-}
+    });
+};
+
 const userInput = ref('');
 const messages = ref([]);
 const isBotResponding = ref(false);
-const isTyping = ref(false);
 const messagesContainer = ref(null);
 let cancelStream = null;
 
@@ -80,132 +81,182 @@ const canSend = computed(() => {
     return userInput.value.trim().length > 0 && !isBotResponding.value;
 });
 
-const handleSend = async () => {
-    if (!canSend.value) return;
+const handleStreamData = (data) => {
+    try {
+        let content = typeof data === 'string'
+            ? tryParseJson(data)?.choices?.[0]?.delta?.content || data
+            : data.choices?.[0]?.delta?.content || data.text || '';
 
-    const question = userInput.value.trim();
-    userInput.value = '';
+        if (content) {
+            const lastMsg = messages.value[messages.value.length - 1];
+            if (isBotMessageStreaming(lastMsg)) {
+                lastMsg.content += content;
+            } else {
+                messages.value.push(createBotMessage(content, true));
+            }
+        }
+    } catch (error) {
+        console.error('处理消息数据出错:', error);
+    }
+};
 
-    // 添加用户消息
+const handleStreamDone = () => {
+    const lastMsg = messages.value.findLast(m => m.sender === 'bot');
+    if (lastMsg?.isStreaming) {
+        lastMsg.isStreaming = false;
+    }
+    isBotResponding.value = false;
+    cancelStream = null;
+};
+
+const handleStreamError = (error, context) => {
+    console.error('API调用错误:', error);
+    messages.value.push(createBotMessage(
+        context ? `获取【${context}】信息失败，请稍后再试` : '暂时无法处理您的请求，请稍后再试',
+        false
+    ));
+    isBotResponding.value = false;
+    cancelStream = null;
+};
+
+const callChatAPI = async (question, customContent = null) => {
+    isBotResponding.value = true;
     messages.value.push({
         sender: 'user',
-        content: question,
+        content: customContent || question,
         timestamp: new Date().toISOString()
     });
-
-    isBotResponding.value = true;
-    isTyping.value = true;
 
     try {
         cancelStream = api.DeepSeekAPI.chatWithDeepSeek(
             question,
             {
-                onData: (data) => {
-                    try {
-                        // 兼容纯文本和JSON格式
-                        let content;
-                        if (typeof data === 'string') {
-                            try {
-                                const parsed = JSON.parse(data);
-                                content = parsed.choices?.[0]?.delta?.content || parsed.text || data;
-                            } catch {
-                                content = data; // 直接使用纯文本
-                            }
-                        } else {
-                            content = data.choices?.[0]?.delta?.content || data.text || '';
-                        }
-
-                        if (content) {
-                            const lastMsg = messages.value[messages.value.length - 1];
-                            if (lastMsg?.sender === 'bot' && lastMsg?.isStreaming) {
-                                // 追加到现有消息
-                                lastMsg.content += content;
-                            } else {
-                                // 创建新消息
-                                messages.value.push({
-                                    sender: 'bot',
-                                    content: content,
-                                    isStreaming: true,
-                                    timestamp: new Date().toISOString()
-                                });
-                            }
-                            scrollToBottom();
-                        }
-                    } catch (error) {
-                        console.error('处理消息数据出错:', error);
-                    }
-                },
-                onDone: () => {
-                    const lastMsg = messages.value.findLast(m => m.sender === 'bot');
-                    if (lastMsg?.isStreaming) {
-                        lastMsg.isStreaming = false;
-                    }
-                    isBotResponding.value = false;
-                    isTyping.value = false;
-                    cancelStream = null;
-                },
-                onError: (error) => {
-                    console.error('API调用错误:', error);
-                    messages.value.push({
-                        sender: 'bot',
-                        content: '暂时无法处理您的请求，请稍后再试',
-                        isStreaming: false,
-                        timestamp: new Date().toISOString()
-                    });
-                    isBotResponding.value = false;
-                    isTyping.value = false;
-                    cancelStream = null;
-                    scrollToBottom();
-                }
+                onData: handleStreamData,
+                onDone: handleStreamDone,
+                onError: (error) => handleStreamError(error, customContent || question)
             }
         );
     } catch (error) {
-        console.error('请求初始化失败:', error);
-        messages.value.push({
-            sender: 'bot',
-            content: '无法连接到AI服务',
-            isStreaming: false,
-            timestamp: new Date().toISOString()
-        });
-        isBotResponding.value = false;
-        isTyping.value = false;
-        cancelStream = null;
-        scrollToBottom();
+        handleStreamError(error, customContent || question);
     }
 };
 
-const cancelRequest = () => {
-    if (cancelStream) {
-        cancelStream();
-        cancelStream = null;
-        isBotResponding.value = false;
-        isTyping.value = false;
+const handleSend = async () => {
+    if (!canSend.value) return;
+    await callChatAPI(userInput.value.trim());
+    userInput.value = '';
+};
 
-        // 标记最后一条AI消息为完成
-        const lastMsg = messages.value.findLast(m => m.sender === 'bot');
-        if (lastMsg?.isStreaming) {
-            lastMsg.isStreaming = false;
-        }
+const handlePestClick = async (pest) => {
+    if (!pest || isBotResponding.value) return;
+    const question = `请提供关于【${pest}】的以下信息：
+        1. 基本特征
+        2. 危害症状
+        3. 防治方法
+        4. 推荐农药（如有）
+        请用专业但易懂的语言回答，并分点说明。`;
+    await callChatAPI(question, `[病虫害咨询] ${pest}`);
+};
+
+const cancelRequest = () => {
+    cancelStream?.();
+    cancelStream = null;
+    isBotResponding.value = false;
+
+    const lastMsg = messages.value.findLast(m => m.sender === 'bot');
+    if (lastMsg?.isStreaming) {
+        lastMsg.isStreaming = false;
     }
 };
 
 const scrollToBottom = () => {
     nextTick(() => {
-        if (messagesContainer.value) {
-            messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-        }
+        messagesContainer.value?.scrollTo({
+            top: messagesContainer.value.scrollHeight,
+            behavior: 'smooth'
+        });
     });
 };
 
-// 组件卸载时取消请求
+const tryParseJson = (str) => {
+    try {
+        return JSON.parse(str);
+    } catch {
+        return null;
+    }
+};
+
+const isBotMessageStreaming = (msg) => {
+    return msg?.sender === 'bot' && msg?.isStreaming;
+};
+
+const createBotMessage = (content, isStreaming) => ({
+    sender: 'bot',
+    content,
+    isStreaming,
+    timestamp: new Date().toISOString()
+});
+
 onUnmounted(() => {
     cancelRequest();
+    pestStore.refresh();
 });
 
 watch(messages, scrollToBottom, { deep: true });
 </script>
 
 <style scoped>
+.pest-button-container {
+    width: 98.5%;
+    height: 45px;
+    margin: 10px;
+    background: white;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.pest-label {
+    font-weight: bold;
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.pest-button {
+    padding: 6px 12px;
+    background-color: #f0f8ff;
+    border: 1px solid #5b8cff;
+    border-radius: 16px;
+    color: #2d3748;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.pest-button:hover {
+    background-color: #5b8cff;
+    color: white;
+}
+
+.stop-button {
+    margin-left: 16px;
+    padding: 4px 12px;
+    background: #ff5b5b;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.stop-button:hover {
+    background: #ff3a3a;
+    transform: translateY(-1px);
+}
+
 :root {
     --primary-color: #5b8cff;
     --user-bg: linear-gradient(135deg, #5b8cff 0%, #3d6ef7 100%);
@@ -216,27 +267,13 @@ watch(messages, scrollToBottom, { deep: true });
 .chat-container {
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(241, 239, 239, 0.95);
     border-radius: 20px;
     box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-.chat-header {
-    padding: 24px;
-    background: var(--primary-color);
-    color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.chat-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 600;
-    letter-spacing: -0.5px;
 }
 
 .chat-messages {
@@ -260,7 +297,7 @@ watch(messages, scrollToBottom, { deep: true });
 
 .chat-message.user {
     background: var(--user-bg);
-    color: white;
+    color: black;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
     box-shadow: var(--shadow);
@@ -350,6 +387,7 @@ watch(messages, scrollToBottom, { deep: true });
     background: var(--bot-bg);
     border-radius: 20px;
     align-self: flex-start;
+    align-items: center;
 }
 
 .typing-dot {
@@ -380,16 +418,13 @@ watch(messages, scrollToBottom, { deep: true });
     }
 }
 
-/* 基础样式 */
 .markdown-content {
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.6;
     color: inherit;
-    /* 继承父级颜色 */
 }
 
-/* 深度选择器使用新语法 */
 .markdown-content :deep(p) {
     margin: 0.5em 0;
 }
@@ -475,7 +510,6 @@ watch(messages, scrollToBottom, { deep: true });
     font-weight: bold;
 }
 
-/* 暗色模式适配 */
 @media (prefers-color-scheme: dark) {
     :root {
         --border-color: #444;
