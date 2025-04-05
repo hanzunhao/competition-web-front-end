@@ -4,7 +4,7 @@
             <el-icon>
                 <Files />
             </el-icon>
-            <span>大棚数据</span>
+            <span>温室数据</span>
         </el-menu-item>
         <el-menu-item index="2" @click="page2Handle">
             <el-icon>
@@ -16,7 +16,7 @@
             <el-icon>
                 <ChatLineSquare />
             </el-icon>
-            <span>病虫害识别</span>
+            <span>智能病虫害问答</span>
         </el-menu-item>
         <el-menu-item index="4" @click="page4Handle">
             <el-icon>

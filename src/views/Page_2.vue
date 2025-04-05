@@ -1,7 +1,7 @@
 <template>
     <MainLayout>
-        <el-row gutter="20">
-            <el-col :span="10">
+        <el-row gutter="20" class="page">
+            <el-col :span="10" class="border">
                 <el-row style="height: 9%;">
                     <SegmentedController></SegmentedController>
                 </el-row>
@@ -13,8 +13,7 @@
                     <TaskDrawer></TaskDrawer>
                 </el-row>
             </el-col>
-            <el-divider direction="vertical"></el-divider>
-            <el-col :span="13">
+            <el-col :span="14" class="border">
                 <WarningTable></WarningTable>
             </el-col>
         </el-row>
@@ -39,14 +38,22 @@ const openTaskDrawer = () => {
 </script>
 
 <style scoped>
-.el-divider {
-    height: 100%;
-    border-width: 1px;
-    border-color: #9a9a9a;
-}
-
 .el-row {
     height: 100%;
     width: 100%;
+}
+
+.page {
+    padding: 10px;
+    /* 添加内边距，避免边框紧贴边缘 */
+}
+
+.border {
+    border: 1px solid #ddd;
+    /* 为每个区域添加完整边框 */
+    border-radius: 4px;
+    /* 添加圆角 */
+    padding: 10px;
+    /* 内边距，避免内容紧贴边框 */
 }
 </style>
