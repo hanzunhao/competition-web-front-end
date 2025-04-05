@@ -1,5 +1,5 @@
 <template>
-    <div ref="radarChart" style="height: 95%; width: 95%;"></div>
+    <div ref="chart" style="height: 95%; width: 95%;"></div>
 </template>
 
 <script setup>
@@ -9,11 +9,11 @@ import { ChartOptionStore } from '../stores/ChartOptionStore';
 
 const chartOptionStore = ChartOptionStore();
 
-const radarChart = ref(null);
+const chart = ref(null);
 
 onMounted(() => {
-    const myChart = echarts.init(radarChart.value);
+    const myChart = echarts.init(chart.value);
 
-    myChart.setOption(chartOptionStore.option_4);
+    myChart.setOption(chartOptionStore.meanSoilHumidityOption);
 });
 </script>

@@ -14,6 +14,6 @@ const chart = ref(null);
 onMounted(() => {
     const myChart = echarts.init(chart.value);
 
-    myChart.setOption(chartOptionStore.option_3);
+    myChart.setOption(chartOptionStore.illuminationOption);
 });
 </script>

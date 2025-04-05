@@ -28,20 +28,42 @@
         </template>
         <template v-slot:data-tables>
             <div style="height: 100%; display: flex; flex-direction: column;">
-                <el-row style="flex: 1;">
+                <el-row :gutter="20" class="chart-row">
                     <el-col :span="12">
-                        <Chart_1 />
+                        <div class="chart-container">
+                            <airTemperatureChart/>
+                        </div>
                     </el-col>
                     <el-col :span="12">
-                        <Chart_2 />
+                        <div class="chart-container">
+                            <airHumidityChart />
+                        </div>
                     </el-col>
                 </el-row>
-                <el-row style="flex: 1;">
+
+                <el-row :gutter="20" class="chart-row">
                     <el-col :span="12">
-                        <Chart_3 />
+                        <div class="chart-container">
+                            <meanSoilTemperatureChart />
+                        </div>
                     </el-col>
                     <el-col :span="12">
-                        <Chart_4 />
+                        <div class="chart-container">
+                            <meanSoilHumidityChart />
+                        </div>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20" class="chart-row">
+                    <el-col :span="12">
+                        <div class="chart-container">
+                            <illuminationChart />
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="chart-container">
+                            <environmentRadarChart />
+                        </div>
                     </el-col>
                 </el-row>
             </div>
@@ -58,10 +80,12 @@ import GreenHouseMap from '../components/GreenHouseMap.vue';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
-import Chart_1 from '../components/Chart_1.vue';
-import Chart_2 from '../components/Chart_2.vue';
-import Chart_3 from '../components/Chart_3.vue';
-import Chart_4 from '../components/Chart_4.vue';
+import illuminationChart from '../components/illuminationChart.vue';
+import airTemperatureChart from '../components/airTemperatureChart.vue';
+import airHumidityChart from '../components/airHumidityChart.vue';
+import meanSoilTemperatureChart from '../components/meanSoilTemperatureChart.vue';
+import meanSoilHumidityChart from '../components/meanSoilHumidityChart.vue';
+import environmentRadarChart from '../components/environmentRadarChart.vue';
 
 const greenHouseStore = GreenHouseStore();
 const visibleStore = VisibleStore();
@@ -105,50 +129,82 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 基础容器样式 */
 .card-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 4px;
-    height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 4px;
+  height: 100%;
 }
 
+/* 数据卡片样式优化 */
 .data-card {
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    background-color: #fff;
-    padding: 10px;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff;
+  padding: 0;
+  overflow: hidden;
 }
 
 .data-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  min-height: 70px;
 }
 
 .key {
-    font-size: 16px;
-    font-weight: 800;
-    color: #606266;
-    margin-bottom: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--el-text-color-secondary);
+  margin-bottom: 4px;
 }
 
 .value {
-    font-size: 20px;
-    font-weight: 600;
-    color: #409EFF;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--el-color-primary);
 }
 
 .unit {
-    font-size: 12px;
-    color: #909399;
-    margin-top: 4px;
+  font-size: 0.6rem;
+  color: var(--el-text-color-placeholder);
+  margin-top: 2px;
+}
+
+/* 视频流样式 */
+.video-stream {
+  height: 100%;
+  width: 98%;
+  margin: 1%;
+  object-fit: contain;
+  background-color: #000;
+}
+
+/* 图表系统整体布局优化 */
+.chart-row {
+  margin: 0;
+  height: 33.33%;
+  flex: 1;
+}
+
+/* 图表容器增强 */
+.chart-container {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  margin: 6px;
 }
 </style>

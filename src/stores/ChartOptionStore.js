@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export const ChartOptionStore = defineStore("ChartOptionStore", {
     state: () => ({
-        option_1: {
+        airTemperatureOption: {
             backgroundColor: '#fff',
             title: {
                 text: '温室内24小时温度变化',
@@ -22,7 +22,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             yAxis: {
                 type: 'value',
                 name: '气温 (°C)', // Y轴名称
-                nameLocation: 'center',
+                nameLocation: 'end',
                 nameGap: 30
             },
             tooltip: {
@@ -53,7 +53,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                 snap: true
             }
         },
-        option_2: {
+        airHumidityOption: {
             backgroundColor: '#fff',
             title: {
                 text: '温室内24小时湿度变化',
@@ -73,7 +73,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             yAxis: {
                 type: 'value',
                 name: '湿度 (%)', // Y轴名称
-                nameLocation: 'center',
+                nameLocation: 'end',
                 nameGap: 30,
                 min: 50, // 设置Y轴最小值为50%
                 max: 80  // 设置Y轴最大值为80%
@@ -95,6 +95,9 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                     },
                     lineStyle: {
                         color: 'rgba(54, 162, 235, 1)' // 折线颜色
+                    },
+                    itemStyle: {
+                        color: 'rgba(54, 162, 235, 1)' // 数据点颜色
                     }
                 }
             ],
@@ -103,7 +106,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                 snap: true
             }
         },
-        option_3: {
+        illuminationOption: {
             backgroundColor: '#fff',
             title: {
                 text: '温室内24小时光照强度变化',
@@ -121,9 +124,10 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                 nameGap: 25
             },
             yAxis: {
+                offset:-3,
                 type: 'value',
                 name: '光照强度 (lux)', // Y轴名称
-                nameLocation: 'center',
+                nameLocation: 'end',
                 nameGap: 30,
                 min: 0, // 设置Y轴最小值为0
                 max: 5000 // 设置Y轴最大值为5000
@@ -145,6 +149,9 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                     },
                     lineStyle: {
                         color: 'rgba(255, 193, 7, 1)' // 折线颜色（橙色）
+                    },
+                    itemStyle: {
+                        color: 'rgba(255, 193, 7, 1)' // 数据点颜色（橙色）
                     }
                 }
             ],
@@ -153,16 +160,114 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                 snap: true
             }
         },
-        option_4: {
+        meanSoilTemperatureOption: {
             backgroundColor: '#fff',
             title: {
-                text: '温室环境参数雷达图',
+                text: '24小时平均土壤温度变化',
                 left: 'center',
                 textStyle: {
                     fontSize: 16,
                     fontWeight: 'bold'
                 }
             },
+            xAxis: {
+                type: 'category',
+                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+                name: '时间',
+                nameLocation: 'center',
+                nameGap: 25
+            },
+            yAxis: {
+                type: 'value',
+                name: '土壤温度 (°C)',
+                nameLocation: 'end',
+                nameGap: 30,
+                min: 15,
+                max: 30
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: '时间: {b0}<br />土壤温度: {c0}°C'
+            },
+            series: [
+                {
+                    data: [
+                        18, 18, 17, 17, 16, 16, 16, 16, 17, 18, 19, 20,
+                        21, 22, 23, 24, 25, 26, 25, 24, 23, 22, 21, 20
+                    ],
+                    type: 'line',
+                    smooth: true,
+                    areaStyle: {
+                        color: 'rgba(139, 69, 19, 0.2)' // Brown color with transparency
+                    },
+                    lineStyle: {
+                        color: 'rgba(139, 69, 19, 1)' // Brown color
+                    },
+                    itemStyle: {
+                        color: 'rgba(139, 69, 19, 1)' // Brown color
+                    }
+                }
+            ],
+            axisPointer: {
+                show: true,
+                snap: true
+            }
+        },
+        meanSoilHumidityOption: {
+            backgroundColor: '#fff',
+            title: {
+                text: '24小时平均土壤湿度变化',
+                left: 'center',
+                textStyle: {
+                    fontSize: 16,
+                    fontWeight: 'bold'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+                name: '时间',
+                nameLocation: 'center',
+                nameGap: 25
+            },
+            yAxis: {
+                type: 'value',
+                name: '土壤湿度 (%)',
+                nameLocation: 'end',
+                nameGap: 30,
+                min: 40,
+                max: 80
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: '时间: {b0}<br />土壤湿度: {c0}%'
+            },
+            series: [
+                {
+                    data: [
+                        65, 65, 66, 66, 67, 67, 68, 68, 67, 66, 65, 64,
+                        63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52
+                    ],
+                    type: 'line',
+                    smooth: true,
+                    areaStyle: {
+                        color: 'rgba(0, 100, 0, 0.2)' // Dark green color with transparency
+                    },
+                    lineStyle: {
+                        color: 'rgba(0, 100, 0, 1)' // Dark green color
+                    },
+                    itemStyle: {
+                        color: 'rgba(0, 100, 0, 1)' // Dark green color
+                    }
+                }
+            ],
+            axisPointer: {
+                show: true,
+                snap: true
+            }
+        },
+        environmentRadarOption: {
+            backgroundColor: '#fff',
             tooltip: {
                 trigger: 'item'
             },

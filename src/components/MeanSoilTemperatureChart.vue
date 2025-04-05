@@ -13,7 +13,7 @@ const chart = ref(null);
 
 onMounted(() => {
     const myChart = echarts.init(chart.value);
-    
-    myChart.setOption(chartOptionStore.option_1);
+
+    myChart.setOption(chartOptionStore.meanSoilTemperatureOption);
 });
 </script>
