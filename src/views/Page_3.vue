@@ -1,3 +1,6 @@
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+</link>
+
 <template>
     <MainLayout>
         <div class="chat-container">
@@ -38,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onUnmounted } from 'vue';
+import { ref, computed, watch, nextTick, onUnmounted, onMounted } from 'vue';
 import api from '../api';
 import MainLayout from '../layout/MainLayout.vue';
 import MarkdownIt from 'markdown-it';
@@ -47,18 +50,27 @@ import { PestStore } from '../stores/PestStore';
 
 const pestStore = PestStore();
 
+onMounted(async () => {
+    await pestStore.refresh();
+});
 const md = new MarkdownIt({
     html: false,
     linkify: true,
-    typographer: true,
     breaks: true
 });
 
 const renderMarkdown = (content) => {
     if (!content) return '';
+
+    // 更严格的标题格式处理
     const fixedContent = content
-        .replace(/^(#{1,6})\s+/gm, (match, p1) => p1 + ' ')
+        // 处理所有可能的标题格式变体
+        .replace(/^(#{1,6})([^#\s])(.*)$/gm, (match, hashes, firstChar, rest) => `${hashes} ${firstChar}${rest}`)
+        // 确保标题后有空格
+        .replace(/^(#{1,6})\s*/gm, (match, p1) => `${p1} `)
+        // 处理Windows换行符
         .replace(/\r\n/g, '\n');
+
     const html = md.render(fixedContent);
     return DOMPurify.sanitize(html, {
         ALLOWED_TAGS: [
@@ -70,7 +82,6 @@ const renderMarkdown = (content) => {
         ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target']
     });
 };
-
 const userInput = ref('');
 const messages = ref([]);
 const isBotResponding = ref(false);
@@ -199,7 +210,6 @@ const createBotMessage = (content, isStreaming) => ({
 
 onUnmounted(() => {
     cancelRequest();
-    pestStore.refresh();
 });
 
 watch(messages, scrollToBottom, { deep: true });
@@ -222,6 +232,7 @@ watch(messages, scrollToBottom, { deep: true });
     font-weight: bold;
     margin-right: 8px;
     margin-left: 8px;
+    font-size: 18px !important;
 }
 
 .pest-button {
@@ -233,6 +244,7 @@ watch(messages, scrollToBottom, { deep: true });
     cursor: pointer;
     transition: all 0.2s;
     font-size: 14px;
+    font-size: 16px !important;
 }
 
 .pest-button:hover {
@@ -265,9 +277,12 @@ watch(messages, scrollToBottom, { deep: true });
 }
 
 .chat-container {
+    font-family: "SimSun", "宋体", serif !important;
+    font-size: 16px;
+    /* 基础字号 */
     width: 100%;
     height: 100%;
-    background: rgba(241, 239, 239, 0.95);
+    background: rgba(247, 242, 242, 0.95);
     border-radius: 20px;
     box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
@@ -283,6 +298,8 @@ watch(messages, scrollToBottom, { deep: true });
     display: flex;
     flex-direction: column;
     gap: 12px;
+    font-size: 18px !important;
+    /* 消息正文放大 */
 }
 
 .chat-message {
@@ -328,6 +345,8 @@ watch(messages, scrollToBottom, { deep: true });
     font-size: 1rem;
     transition: all 0.2s ease;
     background: rgba(255, 255, 255, 0.8);
+    font-size: 18px !important;
+    font-family: "SimSun", "宋体", serif;
 }
 
 .chat-input input:focus {
@@ -349,6 +368,7 @@ watch(messages, scrollToBottom, { deep: true });
     display: flex;
     align-items: center;
     gap: 8px;
+    font-size: 18px !important;
 }
 
 .chat-input button:hover {
@@ -438,6 +458,30 @@ watch(messages, scrollToBottom, { deep: true });
     margin: 1em 0 0.5em;
     font-weight: bold;
     color: inherit;
+}
+
+.markdown-content :deep(h1) {
+    font-size: 1.8em !important;
+}
+
+.markdown-content :deep(h2) {
+    font-size: 1.6em !important;
+}
+
+.markdown-content :deep(h3) {
+    font-size: 1.4em !important;
+}
+
+.markdown-content :deep(h4) {
+    font-size: 1.3em !important;
+}
+
+.markdown-content :deep(h5) {
+    font-size: 1.2em !important;
+}
+
+.markdown-content :deep(h6) {
+    font-size: 1.1em !important;
 }
 
 .markdown-content :deep(h1) {

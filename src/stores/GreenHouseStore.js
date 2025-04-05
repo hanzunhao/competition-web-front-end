@@ -56,7 +56,7 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
                 const data = await api.GreenHouseAPI.insertGreenHouseById(id);
                 this.list = data;
             } catch (error) {
-                console.error('获取大棚数据失败:', error);
+                console.error('插入大棚数据失败:', error);
             }
         },
         // 根据id删除温室数据
@@ -65,7 +65,7 @@ export const GreenHouseStore = defineStore('GreenHouseStore', {
                 const data = await api.GreenHouseAPI.deleteGreenHouseById(id);
                 this.list = data;
             } catch (error) {
-                console.error('获取大棚数据失败:', error);
+                console.error('删除大棚数据失败:', error);
             }
         },
         // 获取键的中文名称

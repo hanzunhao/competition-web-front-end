@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 const getAllGreenHouse = async () => {
     try {
-        const response = await request.get('/api/home');
+        const response = await request.get('/api/home');        
         return response.data;
     } catch (error) {
         return [];
