@@ -16,7 +16,7 @@
                 <el-col :span="6" v-for="potId in row" :key="potId" class="pot-col">
                     <div class="pot" :id="potId">
                         <FlowerPot :id="flowerPotStore.list[potId]?.id">
-                            <template #id>{{ flowerPotStore.list[potId]?.id }}</template>
+                            <template #id>{{ potId + 1 }}</template>
                             <template #soilTemperature>{{ flowerPotStore.list[potId]?.soilTemperature }}℃</template>
                             <template #soilHumidity>{{ flowerPotStore.list[potId]?.soilHumidity }}%</template>
                             <template #pestName>{{ flowerPotStore.list[potId]?.pestName }}</template>
@@ -67,7 +67,7 @@ const primaryClickHandler = async () => {
 
     // await logStore.insertLog('搬运花盆', false);
 
-    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId+1);
+    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId + 1);
     flowerPotStore.clearTransportedIdList();
     await fetchFlowerPotData();
 
@@ -163,9 +163,9 @@ onUnmounted(() => {
 
 <style scoped>
 .drawer-content {
-    height: 88%;
+    height: 84%;
     background-color: #f5f5f5;
-    padding: 10px;
+    padding: 5px;
     border-radius: 8px;
     overflow-y: auto;
 }
@@ -180,6 +180,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
 }
 
 .pot {

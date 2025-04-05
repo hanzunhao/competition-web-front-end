@@ -95,7 +95,7 @@ let socket = null;
 let intervalId = null;
 
 const back = () => {
-    router.push({ name: 'Home' });
+    router.push({ name: 'Page_1' });
 };
 
 const handleVideoMessage = (event) => {

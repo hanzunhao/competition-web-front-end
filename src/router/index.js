@@ -5,15 +5,20 @@ import { createRouter, createWebHashHistory } from "vue-router";
 const routes = [
     {
         path: "/",
-        redirect: "/home",  // 将根路径 / 重定向到 /home
+        redirect: "/Home",  // 将根路径 / 重定向到 /home
     },
     {
         path: "/home",
         name: "Home",
-        component: () => import("../views/HomePage.vue"),
+        component: () => import("../views/Page_1.vue"),
     },
     {
-        path: "/home/greenhousedetail",
+        path: "/page_1",
+        name: "Page_1",
+        component: () => import("../views/Page_1.vue"),
+    },
+    {
+        path: "/page_1/greenhousedetail",
         name: "GreenHouseDetail",
         component: () => import("../views/GreenHouseDetailPage.vue"),
     },

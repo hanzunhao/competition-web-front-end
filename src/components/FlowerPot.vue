@@ -1,37 +1,45 @@
 <template>
-    <el-card shadow="hover" :header="header">
+    <el-card shadow="hover" :header="header" class="compact-card">
         <template #header v-if="visibleStore.showFlowerPotHeader">
             <div class="custom-header">
                 <el-checkbox size="large" class="custom-checkbox" @change="handleCheckboxChange"></el-checkbox>
             </div>
         </template>
-        <el-descriptions :column="1" :size="small" border>
+        <el-descriptions :column="1" :size="mini" border class="compact-descriptions">
             <el-descriptions-item>
                 <template #label>
-                    <div class="cell-item">ID</div>
+                    <p class="compact-label">ID</p>
                 </template>
-                <slot name="id"></slot>
+                <div class="compact-content">
+                    <slot name="id"></slot>
+                </div>
             </el-descriptions-item>
 
             <el-descriptions-item>
                 <template #label>
-                    <div class="cell-item">土壤温度</div>
+                    <p class="compact-label">土壤温度</p>
                 </template>
-                <slot name="soilTemperature"></slot>
+                <div class="compact-content">
+                    <slot name="soilTemperature"></slot>
+                </div>
             </el-descriptions-item>
 
             <el-descriptions-item>
                 <template #label>
-                    <div class="cell-item">土壤湿度</div>
+                    <p class="compact-label">土壤湿度</p>
                 </template>
-                <slot name="soilHumidity"></slot>
+                <div class="compact-content">
+                    <slot name="soilHumidity"></slot>
+                </div>
             </el-descriptions-item>
 
             <el-descriptions-item>
                 <template #label>
-                    <div class="cell-item">病虫害</div>
+                    <p class="compact-label">病虫害</p>
                 </template>
-                <slot name="pestName"></slot>
+                <div class="compact-content">
+                    <slot name="pestName"></slot>
+                </div>
             </el-descriptions-item>
         </el-descriptions>
     </el-card>
@@ -52,29 +60,41 @@ const props = defineProps({
 
 const handleCheckboxChange = (isChecked) => {
     if (isChecked) {
-        flowerPotStore.addToTransportedIdList(props.id); // 添加 id
+        flowerPotStore.addToTransportedIdList(props.id);
     } else {
-        flowerPotStore.removeFromTransportedIdList(props.id); // 移除 id
+        flowerPotStore.removeFromTransportedIdList(props.id);
     }
 };
 </script>
 
 <style scoped>
-.el-card {
-    border-radius: 20px;
-    box-shadow: 1px 1px;
-    height: 100%;
+.compact-card {
+    border-radius: 12px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0px;
 }
 
 .custom-header {
     display: flex;
     align-items: center;
-    height: 30px;
+    height: 5px;
     padding: 0;
-    border: none;
+    margin-bottom: 2px;
+}
+
+.compact-label {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.compact-content {
+    font-size: 12px;
+    word-break: break-all;
 }
 
 .custom-checkbox {
     margin: 0;
+    transform: scale(0.8);
 }
 </style>

@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 const getAllGreenHouse = async () => {
     try {
-        const response = await request.get('/api/home');        
+        const response = await request.get('/api/page_1');        
         return response.data;
     } catch (error) {
         return [];
@@ -11,7 +11,7 @@ const getAllGreenHouse = async () => {
 
 const getGreenHouseById = async (id) => {
     try {
-        const response = await request.get(`/api/home/${id}`);
+        const response = await request.get(`/api/page_1/${id}`);
         return response.data;
     } catch (error) {
         return [];
@@ -20,7 +20,7 @@ const getGreenHouseById = async (id) => {
 
 const deleteGreenHouseById = async (id) => {
     try {
-        const response = await request.delete(`/api/home/${id}`);
+        const response = await request.delete(`/api/page_1/${id}`);
         return response.data;
     } catch (error) {
         return [];
@@ -29,7 +29,7 @@ const deleteGreenHouseById = async (id) => {
 
 const insertGreenHouseById = async (id) => {
     try {
-        const response = await request.insert(`/api/home/${id}`);
+        const response = await request.insert(`/api/page_1/${id}`);
         return response.data;
     } catch (error) {
         return [];
