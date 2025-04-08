@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <div class="layout-container">
+    <div class="layout-container" style="height: 40%;">
       <el-scrollbar class="scroll-container">
         <div class="grid">
           <div v-for="(chart, index) in chartsData" :key="index" class="card">
@@ -9,7 +9,7 @@
         </div>
       </el-scrollbar>
     </div>
-    <div class="layout-container">
+    <div class="layout-container" style="height: 60%;">
       <el-scrollbar class="scroll-container">
         <div v-if="storeStore.list?.length" class="grid">
           <StoreCard v-for="store in storeStore.list" :key="store.id" :store-id="store.id" />
