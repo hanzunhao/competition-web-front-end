@@ -80,12 +80,12 @@ import GreenHouseMap from '../components/GreenHouseMap.vue';
 import { GreenHouseStore } from '../stores/GreenHouseStore';
 import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
-import illuminationChart from '../components/illuminationChart.vue';
-import airTemperatureChart from '../components/airTemperatureChart.vue';
-import airHumidityChart from '../components/airHumidityChart.vue';
-import meanSoilTemperatureChart from '../components/meanSoilTemperatureChart.vue';
-import meanSoilHumidityChart from '../components/meanSoilHumidityChart.vue';
-import environmentRadarChart from '../components/environmentRadarChart.vue';
+import IlluminationChart from '../components/IlluminationChart.vue';
+import AirTemperatureChart from '../components/AirTemperatureChart.vue';
+import AirHumidityChart from '../components/AirHumidityChart.vue';
+import MeanSoilTemperatureChart from '../components/MeanSoilTemperatureChart.vue';
+import MeanSoilHumidityChart from '../components/MeanSoilHumidityChart.vue';
+import EnvironmentRadarChart from '../components/EnvironmentRadarChart.vue';
 
 const greenHouseStore = GreenHouseStore();
 const visibleStore = VisibleStore();

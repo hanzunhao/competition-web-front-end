@@ -277,18 +277,35 @@ watch(messages, scrollToBottom, { deep: true });
 }
 
 .chat-container {
+    background-image: url('../assets/WebIcon.svg');  /* 使用@/别名确保路径正确 */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* 可选，根据需求决定是否固定背景 */
     font-family: "SimSun", "宋体", serif !important;
     font-size: 16px;
-    /* 基础字号 */
     width: 100%;
     height: 100%;
-    background: rgba(247, 242, 242, 0.95);
+    background-color: rgba(247, 242, 242, 0.95);  /* 添加半透明背景色 */
     border-radius: 20px;
     box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;  /* 为子元素定位提供参考 */
+}
+
+/* 添加半透明覆盖层 */
+.chat-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(247, 242, 242, 0.8);  /* 调整透明度 */
+    z-index: -1;  /* 确保在内容之下 */
+    border-radius: 20px;
 }
 
 .chat-messages {
