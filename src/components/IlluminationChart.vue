@@ -9,7 +9,9 @@
 import { ref, onMounted, nextTick, watch } from 'vue';
 import * as echarts from "echarts";
 import { ChartOptionStore } from '../stores/ChartOptionStore';
+import { VisibleStore } from '../stores/VisibleStore';
 
+const visibleStore=VisibleStore();
 const chartOptionStore = ChartOptionStore();
 
 const chart = ref(null);
@@ -19,8 +21,10 @@ const dialogVisible = ref(false);
 let myChart = null;
 let dialogEchart = null;
 
-onMounted(() => {
+onMounted(async() => {
     myChart = echarts.init(chart.value);
+    await chartOptionStore.loadChartData(visibleStore.greenhouseId + 1);
+
     myChart.setOption(chartOptionStore.illuminationOption);
 });
 

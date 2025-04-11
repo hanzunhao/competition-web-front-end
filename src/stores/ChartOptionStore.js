@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import api from "../api";
 
 export const ChartOptionStore = defineStore("ChartOptionStore", {
     state: () => ({
@@ -14,7 +15,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             xAxis: {
                 type: 'category',
-                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`), // 24小时时间点
+                data: [], // 24小时时间点
                 name: '时间', // X轴名称
                 nameLocation: 'center',
                 nameGap: 25
@@ -31,10 +32,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             series: [
                 {
-                    data: [
-                        22, 21, 20, 19, 18, 17, 16, 15, 16, 18, 20, 22,
-                        24, 26, 28, 30, 32, 33, 32, 30, 28, 26, 24, 23
-                    ], // 24小时气温数据
+                    data: [], // 24小时气温数据
                     type: 'line',
                     smooth: true, // 平滑曲线
                     areaStyle: {
@@ -65,7 +63,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             xAxis: {
                 type: 'category',
-                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`), // 24小时时间点
+                data: [], // 24小时时间点
                 name: '时间', // X轴名称
                 nameLocation: 'center',
                 nameGap: 25
@@ -84,10 +82,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             series: [
                 {
-                    data: [
-                        60, 62, 64, 65, 66, 68, 70, 72, 74, 75, 76, 77,
-                        78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67
-                    ], // 24小时湿度数据
+                    data: [], // 24小时湿度数据
                     type: 'line',
                     smooth: true, // 平滑曲线
                     areaStyle: {
@@ -118,13 +113,13 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             xAxis: {
                 type: 'category',
-                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`), // 24小时时间点
+                data: [], // 24小时时间点
                 name: '时间', // X轴名称
                 nameLocation: 'center',
                 nameGap: 25
             },
             yAxis: {
-                offset:-3,
+                offset: -3,
                 type: 'value',
                 name: '光照强度 (lux)', // Y轴名称
                 nameLocation: 'end',
@@ -138,10 +133,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             series: [
                 {
-                    data: [
-                        0, 0, 0, 0, 0, 50, 200, 500, 1000, 1500, 2000, 2500,
-                        3000, 3500, 4000, 4500, 4000, 3500, 3000, 2000, 1000, 500, 100, 0
-                    ], // 24小时光照数据
+                    data: [], // 24小时光照数据
                     type: 'line',
                     smooth: true, // 平滑曲线
                     areaStyle: {
@@ -172,7 +164,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             xAxis: {
                 type: 'category',
-                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+                data: [],
                 name: '时间',
                 nameLocation: 'center',
                 nameGap: 25
@@ -191,10 +183,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             series: [
                 {
-                    data: [
-                        18, 18, 17, 17, 16, 16, 16, 16, 17, 18, 19, 20,
-                        21, 22, 23, 24, 25, 26, 25, 24, 23, 22, 21, 20
-                    ],
+                    data: [],
                     type: 'line',
                     smooth: true,
                     areaStyle: {
@@ -225,7 +214,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             xAxis: {
                 type: 'category',
-                data: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+                data: [],
                 name: '时间',
                 nameLocation: 'center',
                 nameGap: 25
@@ -244,10 +233,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
             },
             series: [
                 {
-                    data: [
-                        65, 65, 66, 66, 67, 67, 68, 68, 67, 66, 65, 64,
-                        63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52
-                    ],
+                    data: [],
                     type: 'line',
                     smooth: true,
                     areaStyle: {
@@ -303,16 +289,7 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
                     name: '环境参数',
                     type: 'radar',
                     // 模拟的温室环境数据
-                    data: [
-                        {
-                            value: [25, 60, 3000, 800, 70], // 对应指标的值
-                            name: '当前环境'
-                        },
-                        {
-                            value: [20, 50, 2500, 600, 60], // 对比数据（例如：前一天）
-                            name: '前一天环境'
-                        }
-                    ], // 数据
+                    data: [], // 数据
                     areaStyle: {
                         color: 'rgba(255, 153, 0, 0.4)' // 填充颜色
                     },
@@ -327,6 +304,160 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
         },
     }),
     actions: {
+        async loadChartData(greenHouseId = 1) {
+            try {
+                const now = new Date();
+                const endTime = new Date(now);
+                const startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 精确24小时 
 
+                const res = await api.HistoryDataAPI.select(
+                    greenHouseId,
+                    this.formatForBackend(startTime), // 输出示例：2025-04-10T12:03:03 
+                    this.formatForBackend(endTime)    // 输出示例：2025-04-11T12:03:03 
+                );
+                // 处理数据为24小时格式 
+                const processedData = this.processHistoryData(res);
+
+                // 更新各个图表 
+                this.updateAllCharts(processedData);
+
+                const radarSeries = this.processRadarData(res);
+                this.environmentRadarOption.series = radarSeries.map(data => ({
+                    name: data.name,
+                    type: 'radar',
+                    data: [{
+                        value: data.value,
+                        areaStyle: { color: this.getRandomColor() }
+                    }]
+                }));
+
+                return true;
+            } catch (error) {
+                console.error(' 加载图表数据失败:', error);
+                return false;
+            }
+        },
+
+        formatForBackend(date) {
+            const pad = num => num.toString().padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        },
+
+        processHistoryData(rawData) {
+            // 1. 按自然小时分组（支持跨天数据）
+            const hourlyMap = new Map(); // 使用Map存储按小时分组的数据 
+
+            rawData.forEach(item => {
+                const date = new Date(item.time);
+                // 生成唯一小时键（包含日期+小时，避免跨天合并）
+                const hourKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}  ${date.getHours()}`;
+
+                if (!hourlyMap.has(hourKey)) {
+                    hourlyMap.set(hourKey, {
+                        count: 0,
+                        datetime: date, // 保留完整时间对象 
+                        airTemperature: 0,
+                        airHumidity: 0,
+                        illumination: 0,
+                        meanSoilTemperature: 0,
+                        meanSoilHumidity: 0
+                    });
+                }
+
+                const hourData = hourlyMap.get(hourKey);
+                hourData.count++;
+                hourData.airTemperature += item.airTemperature;
+                hourData.airHumidity += item.airHumidity;
+                hourData.illumination += item.illumination;
+                hourData.meanSoilTemperature += item.meanSoilTemperature;
+                hourData.meanSoilHumidity += item.meanSoilHumidity;
+            });
+
+            // 2. 转换为数组并按时间排序 
+            const sortedData = Array.from(hourlyMap.values())
+                .sort((a, b) => a.datetime - b.datetime)
+                .map(hourData => ({
+                    // 格式化为可读时间（可根据需要调整格式）
+                    time: hourData.datetime.toLocaleString('zh-CN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }),
+                    airTemperature: hourData.count ? (hourData.airTemperature / hourData.count).toFixed(1) : 0,
+                    airHumidity: hourData.count ? (hourData.airHumidity / hourData.count).toFixed(1) : 0,
+                    illumination: hourData.count ? Math.round(hourData.illumination / hourData.count) : 0,
+                    meanSoilTemperature: hourData.count ? (hourData.meanSoilTemperature / hourData.count).toFixed(1) : 0,
+                    meanSoilHumidity: hourData.count ? (hourData.meanSoilHumidity / hourData.count).toFixed(1) : 0
+                }));
+
+            return sortedData;
+        },
+
+        processRadarData(rawData) {
+            if (!rawData || !Array.isArray(rawData)) return [];
+
+            const dateMap = new Map();
+
+            // 按日期分组（示例：2025-04-10）
+            rawData.forEach(item => {
+                const dateStr = new Date(item.time).toISOString().split('T')[0];
+                if (!dateMap.has(dateStr)) {
+                    dateMap.set(dateStr, []);
+                }
+                dateMap.get(dateStr).push(item);
+            });
+
+            // 计算每日五维平均值 
+            return Array.from(dateMap.entries()).map(([date, dayData]) => {
+                const count = dayData.length;
+                return {
+                    name: date,
+                    value: [
+                        dayData.reduce((sum, d) => sum + d.airTemperature, 0) / count,
+                        dayData.reduce((sum, d) => sum + d.airHumidity, 0) / count,
+                        dayData.reduce((sum, d) => sum + d.illumination, 0) / count,
+                        800, // CO₂示例值（需替换实际字段）
+                        dayData.reduce((sum, d) => sum + d.meanSoilHumidity, 0) / count
+                    ]
+                };
+            });
+        },
+
+        updateAllCharts(processedData) {
+            // 直接在方法内格式化时间 (HH:00格式)
+            const formatHour = (date) => {
+                const hours = date.getHours().toString().padStart(2, '0');
+                return `${hours}:00`;
+            };
+
+            // 生成时间轴数据 
+            const timeData = processedData.map(item =>
+                formatHour(new Date(item.time))  // 直接转换原始时间 
+            );
+
+            // 更新所有图表配置 
+            const updateChart = (chartOption, dataKey) => ({
+                ...chartOption,
+                xAxis: { ...chartOption.xAxis, data: timeData },
+                series: [{ ...chartOption.series[0], data: processedData.map(item => item[dataKey]) }]
+            });
+
+            this.airTemperatureOption = updateChart(this.airTemperatureOption, 'airTemperature');
+            this.airHumidityOption = updateChart(this.airHumidityOption, 'airHumidity');
+            this.illuminationOption = updateChart(this.illuminationOption, 'illumination');
+            this.meanSoilTemperatureOption = updateChart(this.meanSoilTemperatureOption, 'meanSoilTemperature');
+            this.meanSoilHumidityOption = updateChart(this.meanSoilHumidityOption, 'meanSoilHumidity');
+        },
+
+        getRandomColor() {
+            const colors = [
+                'rgba(255, 99, 132, 0.4)',
+                'rgba(54, 162, 235, 0.4)',
+                'rgba(255, 206, 86, 0.4)',
+                'rgba(75, 192, 192, 0.4)'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)]; 
+        }
     }
 })
