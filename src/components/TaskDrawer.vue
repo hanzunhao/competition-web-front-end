@@ -68,7 +68,7 @@ const handleClose = () => {
 }
 
 .tabs-container {
-  height: 10%;
+  height: 15%;
 }
 
 .tag-list {

@@ -306,7 +306,12 @@ export const ChartOptionStore = defineStore("ChartOptionStore", {
     actions: {
         async loadChartData(greenHouseId = 1) {
             try {
-                const now = new Date();
+                // const now = new Date();
+
+                // 测试用固定时间
+                const now = new Date('2025-04-10T23:00:01'); 
+
+                
                 const endTime = new Date(now);
                 const startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 精确24小时 
 

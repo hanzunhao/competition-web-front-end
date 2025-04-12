@@ -18,27 +18,8 @@ const getGreenHouseById = async (id) => {
     }
 };
 
-const deleteGreenHouseById = async (id) => {
-    try {
-        const response = await request.delete(`/api/page_1/${id}`);
-        return response.data;
-    } catch (error) {
-        return [];
-    }
-};
-
-const insertGreenHouseById = async (id) => {
-    try {
-        const response = await request.insert(`/api/page_1/${id}`);
-        return response.data;
-    } catch (error) {
-        return [];
-    }
-};
 
 export default {
     getAllGreenHouse,
-    getGreenHouseById,
-    deleteGreenHouseById,
-    insertGreenHouseById
+    getGreenHouseById
 };

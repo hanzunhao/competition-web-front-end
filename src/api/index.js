@@ -7,6 +7,7 @@ import DeepSeekAPI from "./DeepSeekAPI";
 import StoreAPI from "./StoreAPI";
 import RaspberryPiAPI from "./RaspberryPiAPI";
 import HistoryDataAPI from "./HistoryDataAPI";
+import FlowerAPI from "./FlowerAPI";
 
 export default {
     GreenHouseAPI,
@@ -17,5 +18,6 @@ export default {
     DeepSeekAPI,
     StoreAPI,
     RaspberryPiAPI,
-    HistoryDataAPI
+    HistoryDataAPI,
+    FlowerAPI
 };

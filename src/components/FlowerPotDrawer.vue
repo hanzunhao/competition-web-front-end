@@ -43,10 +43,13 @@ import { VisibleStore } from '../stores/VisibleStore';
 import { FlowerPotStore } from '../stores/FlowerPotStore';
 import { Loading } from '@element-plus/icons-vue';
 import { LogStore } from '../stores/LogStore';
+import api from '../api';
+import { GreenHouseStore } from '../stores/GreenHouseStore';
 
 const visibleStore = VisibleStore();
 const flowerPotStore = FlowerPotStore();
 const logStore = LogStore();
+const greenHouseStore = GreenHouseStore();
 
 const potNum = ref(0);
 const potRows = ref([]);
@@ -61,17 +64,33 @@ const selectClickHandler = () => {
 }
 
 const primaryClickHandler = async () => {
+    // 控制组件可见性
     visibleStore.showFlowerPotHeader = false;
     visibleStore.cancelButtonVisible = false;
     visibleStore.selectOrPrimaryButtonVisible = true;
 
-    // await logStore.insertLog('搬运花盆', false);
+    // 生成任务开始日志
+    await logStore.insertLog('搬运花盆', false);
 
+    // 获取搬运花卉的信息
+    const name = greenHouseStore.list[visibleStore.greenhouseId]?.flowerName;
+    const number = flowerPotStore.transportedIdList.length;
+    const storeId = greenHouseStore.list[visibleStore.greenhouseId]?.storeId;
+
+    // 删除地图上要搬运的花盆组件
     await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId + 1);
+
+    // 向数据库插入花卉实例使仓库新增被搬运的花卉
+    api.FlowerAPI.insertFlower(name, number, storeId)
+
+    // 清空要搬运的花盆的id列表
     flowerPotStore.clearTransportedIdList();
+
+    // 重新获取数据以刷新地图
     await fetchFlowerPotData();
 
-    // await logStore.insertLog('搬运花盆', true);
+    // 生成任务完成日志
+    await logStore.insertLog('搬运花盆', true);
 }
 
 const cancelClickHandler = () => {
