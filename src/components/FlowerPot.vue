@@ -59,10 +59,18 @@ const props = defineProps({
 });
 
 const handleCheckboxChange = (isChecked) => {
-    if (isChecked) {
-        flowerPotStore.addToTransportedIdList(props.id);
+    if (visibleStore.cancelMoveButtonVisible) {
+        if (isChecked) {
+            flowerPotStore.addToMovePotIdList(props.id);
+        } else {
+            flowerPotStore.removeFromMovePotIdList(props.id);
+        }
     } else {
-        flowerPotStore.removeFromTransportedIdList(props.id);
+        if (isChecked) {
+            flowerPotStore.addToWaterPotIdList(props.id);
+        } else {
+            flowerPotStore.removeFromWaterPotIdList(props.id);
+        }
     }
 };
 </script>

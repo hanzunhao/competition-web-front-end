@@ -4,7 +4,8 @@ import api from "../api";
 export const FlowerPotStore = defineStore('FlowerPotStore', {
     state: () => ({
         list: [], // 花盆列表
-        transportedIdList: [] // 需要搬运的花盆 id 列表
+        movePotIdList: [], // 需要搬运的花盆 id 列表
+        waterPotIdList: []
     }),
     actions: {
         // 获取花盆数据
@@ -19,33 +20,56 @@ export const FlowerPotStore = defineStore('FlowerPotStore', {
         // 删除花盆数据
         async deleteFlowerPotByPotIdList(greenHouseId) {
             try {
-                const data = await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId,this.transportedIdList);
+                const data = await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId, this.movePotIdList);
                 this.list = data;
             } catch (error) {
                 console.error('获取花盆数据失败:', error);
             }
         },
-        // 添加 id 到 transportedIdList
-        addToTransportedIdList(id) {
-            if (!this.transportedIdList.includes(id)) {
-                this.transportedIdList.push(id);
+        // 添加 id 到 movePotIdList
+        addToMovePotIdList(id) {
+            if (!this.movePotIdList.includes(id)) {
+                this.movePotIdList.push(id);
             }
+            console.log("move-list:", this.movePotIdList);
         },
-        // 从 transportedIdList 中移除 id
-        removeFromTransportedIdList(id) {
-            const index = this.transportedIdList.indexOf(id);
+        // 从 movePotIdList 中移除 id
+        removeFromMovePotIdList(id) {
+            const index = this.movePotIdList.indexOf(id);
             if (index !== -1) {
-                this.transportedIdList.splice(index, 1);
+                this.movePotIdList.splice(index, 1);
             }
+            console.log("move-list:", this.movePotIdList);
         },
-        // 清空 transportedIdList
-        clearTransportedIdList() {
-            this.transportedIdList = [];
+        // 清空 MovePotIdList
+        clearMovePotIdList() {
+            this.movePotIdList = [];
+            console.log("move-list:", this.movePotIdList);
         },
-        // 向后端传递温室ID和transportedIdList用于删除花盆数据
+        // 添加 id 到 waterPotIdList
+        addToWaterPotIdList(id) {
+            if (!this.waterPotIdList.includes(id)) {
+                this.waterPotIdList.push(id);
+            }
+            console.log("water-list:", this.waterPotIdList);
+        },
+        // 从 waterPotIdList 中移除 id
+        removeFromWaterPotIdList(id) {
+            const index = this.waterPotIdList.indexOf(id);
+            if (index !== -1) {
+                this.waterPotIdList.splice(index, 1);
+            }
+            console.log("water-list:", this.waterPotIdList);
+        },
+        // 清空 waterPotIdList
+        clearWaterPotIdList() {
+            this.waterPotIdList = [];
+            console.log("water-list:", this.waterPotIdList);
+        },
+        // 向后端传递温室ID和MovePotIdList用于删除花盆数据
         async deleteSelectedFlowerPots(greenHouseId) {
             try {
-                await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId, this.transportedIdList);
+                await api.FlowerPotAPI.deleteFlowerPotByPotIdList(greenHouseId, this.movePotIdList);
             } catch (error) {
                 console.error('删除被搬运的花盆失败:', error);
             }

@@ -5,8 +5,10 @@ const store = TimeLineStore()
 
 export const VisibleStore = defineStore("VisibleStore", {
     state: () => ({
-        selectOrPrimaryButtonVisible: true,
-        cancelButtonVisible: false,
+        selectOrPrimaryMoveButtonVisible: true,
+        cancelMoveButtonVisible: false,
+        selectOrPrimaryWaterButtonVisible: true,
+        cancelWaterButtonVisible: false,
         showFlowerPotHeader: false,
         taskDrawerVisible: false,
         flowerPotDrawerVisible: false,

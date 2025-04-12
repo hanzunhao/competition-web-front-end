@@ -8,6 +8,7 @@ import StoreAPI from "./StoreAPI";
 import RaspberryPiAPI from "./RaspberryPiAPI";
 import HistoryDataAPI from "./HistoryDataAPI";
 import FlowerAPI from "./FlowerAPI";
+import TaskAPI from "./TaskAPI";
 
 export default {
     GreenHouseAPI,
@@ -19,5 +20,6 @@ export default {
     StoreAPI,
     RaspberryPiAPI,
     HistoryDataAPI,
-    FlowerAPI
+    FlowerAPI,
+    TaskAPI
 };

@@ -4,11 +4,18 @@
             <div class="custom-header">花盆具体数据</div>
         </template>
 
-        <div class="button-content">
-            <el-button v-if="visibleStore.selectOrPrimaryButtonVisible" type="primary"
-                @click="selectClickHandler">选择花盆</el-button>
-            <el-button v-else type="primary" @click="primaryClickHandler">确认搬运</el-button>
-            <el-button v-if="visibleStore.cancelButtonVisible" type="plain" @click="cancelClickHandler">取消搬运</el-button>
+        <div class="button-content" v-if="visibleStore.selectOrPrimaryMoveButtonVisible">
+            <el-button v-if="visibleStore.selectOrPrimaryWaterButtonVisible" type="primary"
+                @click="selectWaterClickHandler">浇水</el-button>
+            <el-button v-else type="primary" @click="primaryWaterClickHandler">确认</el-button>
+            <el-button v-if="visibleStore.cancelWaterButtonVisible" type="plain" @click="cancelWaterClickHandler">取消</el-button>
+        </div>
+
+        <div class="button-content" v-if="visibleStore.selectOrPrimaryWaterButtonVisible">
+            <el-button v-if="visibleStore.selectOrPrimaryMoveButtonVisible" type="primary"
+                @click="selectMoveClickHandler">搬出</el-button>
+            <el-button v-else type="primary" @click="primaryMoveClickHandler">确认</el-button>
+            <el-button v-if="visibleStore.cancelMoveButtonVisible" type="plain" @click="cancelMoveClickHandler">取消</el-button>
         </div>
 
         <div v-if="flowerPotStore.list" class="drawer-content" v-infinite-scroll="loadMore">
@@ -57,48 +64,86 @@ const loading = ref(false);
 const noMore = ref(false);
 const pageSize = 8;
 
-const selectClickHandler = () => {
+const selectMoveClickHandler = () => {
     visibleStore.showFlowerPotHeader = true;
-    visibleStore.cancelButtonVisible = true;
-    visibleStore.selectOrPrimaryButtonVisible = false;
+    visibleStore.cancelMoveButtonVisible = true;
+    visibleStore.selectOrPrimaryMoveButtonVisible = false;
 }
 
-const primaryClickHandler = async () => {
+const selectWaterClickHandler = () => {
+    visibleStore.showFlowerPotHeader = true;
+    visibleStore.cancelWaterButtonVisible = true;
+    visibleStore.selectOrPrimaryWaterButtonVisible = false;
+}
+
+const primaryMoveClickHandler = async () => {
     // 控制组件可见性
     visibleStore.showFlowerPotHeader = false;
-    visibleStore.cancelButtonVisible = false;
-    visibleStore.selectOrPrimaryButtonVisible = true;
+    visibleStore.cancelMoveButtonVisible = false;
+    visibleStore.selectOrPrimaryMoveButtonVisible = true;
+
+    // 获取任务id
+    const taskId = await api.TaskAPI.selectTaskIdByName("move");
 
     // 生成任务开始日志
-    await logStore.insertLog('搬运花盆', false);
+    await logStore.insertLog('搬出花盆', false, taskId);
 
     // 获取搬运花卉的信息
     const name = greenHouseStore.list[visibleStore.greenhouseId]?.flowerName;
-    const number = flowerPotStore.transportedIdList.length;
+    const number = flowerPotStore.movePotIdList.length;
     const storeId = greenHouseStore.list[visibleStore.greenhouseId]?.storeId;
+
 
     // 删除地图上要搬运的花盆组件
     await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId + 1);
 
     // 向数据库插入花卉实例使仓库新增被搬运的花卉
-    api.FlowerAPI.insertFlower(name, number, storeId)
+    api.FlowerAPI.insertFlower(name, number, storeId);
 
     // 清空要搬运的花盆的id列表
-    flowerPotStore.clearTransportedIdList();
+    flowerPotStore.clearMovePotIdList();
 
     // 重新获取数据以刷新地图
     await fetchFlowerPotData();
 
     // 生成任务完成日志
-    await logStore.insertLog('搬运花盆', true);
+    await logStore.insertLog('搬出花盆', true, taskId);
 }
 
-const cancelClickHandler = () => {
+const primaryWaterClickHandler = async () => {
+    // 控制组件可见性
     visibleStore.showFlowerPotHeader = false;
-    visibleStore.cancelButtonVisible = false;
-    visibleStore.selectOrPrimaryButtonVisible = true;
+    visibleStore.cancelWaterButtonVisible = false;
+    visibleStore.selectOrPrimaryWaterButtonVisible = true;
 
-    flowerPotStore.clearTransportedIdList();
+    // 获取任务id
+    const taskId = await api.TaskAPI.selectTaskIdByName("water");
+
+    // 生成任务开始日志
+    await logStore.insertLog('给花盆浇水', false, taskId);
+
+    // 清空要浇水的的花盆的id列表
+    flowerPotStore.clearWaterPotIdList();
+
+    // 生成任务完成日志
+    await logStore.insertLog('给花盆浇水', true, taskId);
+}
+
+const cancelMoveClickHandler = () => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelMoveButtonVisible = false;
+    visibleStore.selectOrPrimaryMoveButtonVisible = true;
+
+    flowerPotStore.clearMovePotIdList();
+}
+
+
+const cancelWaterClickHandler = () => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelWaterButtonVisible = false;
+    visibleStore.selectOrPrimaryWaterButtonVisible = true;
+
+    flowerPotStore.clearWaterPotIdList();
 }
 
 watch(
@@ -110,9 +155,12 @@ watch(
             potRows.value = [];
             noMore.value = false;
             visibleStore.showFlowerPotHeader = false;
-            visibleStore.cancelButtonVisible = false;
-            visibleStore.selectOrPrimaryButtonVisible = true;
-            flowerPotStore.clearTransportedIdList();
+            visibleStore.cancelMoveButtonVisible = false;
+            visibleStore.selectOrPrimaryMoveButtonVisible = true;
+            visibleStore.selectOrPrimaryWaterButtonVisible =true;
+            visibleStore.cancelWaterButtonVisible =false;
+            flowerPotStore.clearMovePotIdList();
+            flowerPotStore.clearWaterPotIdList();
         }
     }
 );
@@ -247,7 +295,7 @@ onUnmounted(() => {
 
 .button-content {
     margin: 1%;
-    height: 11%;
+    height: 5%;
     display: flex;
     align-items: center;
     justify-content: center;

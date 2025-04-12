@@ -14,9 +14,9 @@ const move = async (idList) => {
     }
 };
 
-const water = async () => {
+const water = async (idList) => {
     try {
-        const response = await request.post('/api/RaspberryPi/broadcast','water',
+        const response = await request.post('/api/RaspberryPi/broadcast','water'+idList.join(','),
             {
                 headers: {
                     'Content-Type': 'text/plain',  // 设置请求头为 text/plain

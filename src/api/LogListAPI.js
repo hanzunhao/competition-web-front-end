@@ -25,22 +25,21 @@ const deleteLog = async (ids) => {
                     .join('&');
             }
         });
-        console.log('删除成功');
     } catch (error) {
         console.error('删除失败:', error);
     }
 };
 
-const insertLog = async (name, isCompleted) => {
+const insertLog = async (name, isCompleted,taskId) => {
     try {
         const log = {
             id: 1,
             date: null,
             name: name,
-            isCompleted: isCompleted
+            isCompleted: isCompleted,
+            taskId:taskId
         };
         await request.post('/api/page_2/log/insert', log);
-        console.log('插入成功');
     } catch (error) {
         console.error('插入失败:', error);
     }

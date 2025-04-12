@@ -18,14 +18,13 @@ export const LogStore = defineStore("LogStore", {
     actions: {
         async getAllLog() {
             const allLog = await api.LogListAPI.getAllLog();
-            console.log('All Log Data:', allLog);
             this.list = allLog;
         },
         async deleteLog(ids) {
             await api.LogListAPI.deleteLog(ids);
         },
-        async insertLog(name,isCompleted){
-            await api.LogListAPI.insertLog(name,isCompleted);
+        async insertLog(name,isCompleted,taskId){            
+            await api.LogListAPI.insertLog(name,isCompleted,taskId);
         }
     }
 });

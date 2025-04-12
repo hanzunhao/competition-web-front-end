@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <el-button type="primary" @click="api.RaspberryPiAPI.move([1, 2, 3])">Move</el-button>
-        <el-button type="warning" @click="api.RaspberryPiAPI.water()">Water</el-button>
+        <el-button type="warning" @click="api.RaspberryPiAPI.water([1, 2, 3])">Water</el-button>
         <el-button type="danger" @click="api.RaspberryPiAPI.detect()">Detect</el-button>
         <el-dropdown>
             <span class="el-dropdown-link">
