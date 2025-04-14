@@ -2,13 +2,12 @@
     <MainLayout>
         <div class="main-container">
             <el-carousel class="background-carousel" :interval="5000" height="100%" motion-blur>
-                <el-carousel-item v-for="(_, index) in 3" :key="index">
+                <el-carousel-item v-for="(img, index) in carouselImages" :key="index">
                     <div class="carousel-image" :style="{
-                        backgroundImage: `url(/src/assets/MainCarouselImage_${index + 1}.jpg)`,
+                        backgroundImage: `url(${img})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
-                    }">
-                    </div>
+                    }"></div>
                 </el-carousel-item>
             </el-carousel>
 
@@ -45,6 +44,11 @@ import MainLayout from '../layout/MainLayout.vue';
 import { useRouter } from 'vue-router';
 import { Files, Notebook, ChatLineSquare, DataLine } from '@element-plus/icons-vue';
 import Logo from '../components/Logo.vue';
+import carousel1 from '../assets/MainCarouselImage_1.jpg'
+import carousel2 from '../assets/MainCarouselImage_2.jpg'
+import carousel3 from '../assets/MainCarouselImage_3.jpg'
+
+const carouselImages = [carousel1, carousel2, carousel3]
 
 const router = useRouter();
 

@@ -24,5 +24,8 @@ export default defineConfig({
         ws: true
       },  
     },  
+    host: '0.0.0.0',  // 允许外部访问
+    port: 4173,
+    strictPort: true   // 端口占用直接报错
   },  
 });
