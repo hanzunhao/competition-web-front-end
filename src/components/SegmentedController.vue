@@ -11,5 +11,5 @@ const timeLineStore = TimeLineStore()
 
 const visibleStore = VisibleStore()
 
-const options = Object.keys(timeLineStore.taskAndTime)
+const options = Object.keys(timeLineStore.list)
 </script>

@@ -51,9 +51,6 @@
     </el-card>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 span {
     margin-right: 2%;

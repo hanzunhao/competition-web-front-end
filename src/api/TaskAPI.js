@@ -1,6 +1,6 @@
 import request from "../utils/request";
 
-const selectAllTask = async () => {
+const selectAllWeeklyTask = async () => {
     try {
         const res = await request.get("/api/task/select");
         return res.data;
@@ -11,7 +11,7 @@ const selectAllTask = async () => {
 
 const selectTaskIdByName = async (name) => {
     try {
-        const res = await request.get(`/api/task/select/${name}`);        
+        const res = await request.get(`/api/task/select/${name}`);
         return res.data;
     } catch (error) {
         return [];
@@ -32,17 +32,17 @@ const insertTask = async (name, weekDay, startTime) => {
     }
 }
 
-const deleteTaskById = async (id) => {
+const deleteTask = async (name, weekDay, startTime) => {
     try {
-        await request.delete(`/api/task/delete/${id}`);
+        await request.delete(`/api/task/delete/${name}/${weekDay}/${startTime}`);
     } catch (error) {
         return [];
     }
 }
 
 export default {
-    selectAllTask,
+    selectAllWeeklyTask,
     selectTaskIdByName,
-    deleteTaskById,
+    deleteTask,
     insertTask
 }

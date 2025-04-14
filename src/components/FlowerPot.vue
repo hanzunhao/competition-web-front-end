@@ -65,11 +65,23 @@ const handleCheckboxChange = (isChecked) => {
         } else {
             flowerPotStore.removeFromMovePotIdList(props.id);
         }
-    } else {
+    } else if (visibleStore.cancelWaterButtonVisible) {
         if (isChecked) {
             flowerPotStore.addToWaterPotIdList(props.id);
         } else {
             flowerPotStore.removeFromWaterPotIdList(props.id);
+        }
+    } else if (visibleStore.cancelUpdateButtonVisible) {
+        if (isChecked) {
+            flowerPotStore.addToUpdatePotIdList(props.id);
+        } else {
+            flowerPotStore.removeFromUpdatePotIdList(props.id);
+        }
+    } else if (visibleStore.cancelDetectButtonVisible) {
+        if (isChecked) {
+            flowerPotStore.addToDetectPotIdList(props.id);
+        } else {
+            flowerPotStore.removeFromDetectPotIdList(props.id);
         }
     }
 };

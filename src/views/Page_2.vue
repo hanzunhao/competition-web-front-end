@@ -5,10 +5,10 @@
                 <el-row style="height: 9%;">
                     <SegmentedController></SegmentedController>
                 </el-row>
-                <el-row style="height: 78%; display: flex; justify-content: center; align-items: center;">
+                <el-row style="height: 81%; display: flex; justify-content: center; align-items: center;">
                     <DailyTaskTimeLine></DailyTaskTimeLine>
                 </el-row>
-                <el-row style="height: 5%; display: flex; justify-content: flex-end; align-items: center;">
+                <el-row style="height: 10%; display: flex; justify-content: flex-end; align-items: center;">
                     <el-button type="primary" @click="openTaskDrawer">自定义每日任务</el-button>
                     <TaskDrawer></TaskDrawer>
                 </el-row>

@@ -3,19 +3,42 @@
         <template #header>
             <div class="custom-header">花盆具体数据</div>
         </template>
+        <div class="button-group-container">
+            <div class="button-content"
+                v-if="(visibleStore.selectOrPrimaryMoveButtonVisible ^ visibleStore.selectOrPrimaryWaterButtonVisible ^ visibleStore.selectOrPrimaryUpdateButtonVisible)">
+                <el-button v-if="visibleStore.selectOrPrimaryDetectButtonVisible" type="danger"
+                    @click="selectDetectClickHandler">识别</el-button>
+                <el-button v-else type="primary" @click="primaryDetectClickHandler">确认</el-button>
+                <el-button v-if="visibleStore.cancelDetectButtonVisible" type="plain"
+                    @click="cancelDetectClickHandler">取消</el-button>
+            </div>
 
-        <div class="button-content" v-if="visibleStore.selectOrPrimaryMoveButtonVisible">
-            <el-button v-if="visibleStore.selectOrPrimaryWaterButtonVisible" type="primary"
-                @click="selectWaterClickHandler">浇水</el-button>
-            <el-button v-else type="primary" @click="primaryWaterClickHandler">确认</el-button>
-            <el-button v-if="visibleStore.cancelWaterButtonVisible" type="plain" @click="cancelWaterClickHandler">取消</el-button>
-        </div>
+            <div class="button-content"
+                v-if="(visibleStore.selectOrPrimaryMoveButtonVisible ^ visibleStore.selectOrPrimaryWaterButtonVisible ^ visibleStore.selectOrPrimaryDetectButtonVisible)">
+                <el-button v-if="visibleStore.selectOrPrimaryUpdateButtonVisible" type="success"
+                    @click="selectUpdateClickHandler">更新</el-button>
+                <el-button v-else type="primary" @click="primaryUpdateClickHandler">确认</el-button>
+                <el-button v-if="visibleStore.cancelUpdateButtonVisible" type="plain"
+                    @click="cancelUpdateClickHandler">取消</el-button>
+            </div>
 
-        <div class="button-content" v-if="visibleStore.selectOrPrimaryWaterButtonVisible">
-            <el-button v-if="visibleStore.selectOrPrimaryMoveButtonVisible" type="primary"
-                @click="selectMoveClickHandler">搬出</el-button>
-            <el-button v-else type="primary" @click="primaryMoveClickHandler">确认</el-button>
-            <el-button v-if="visibleStore.cancelMoveButtonVisible" type="plain" @click="cancelMoveClickHandler">取消</el-button>
+            <div class="button-content"
+                v-if="(visibleStore.selectOrPrimaryMoveButtonVisible ^ visibleStore.selectOrPrimaryUpdateButtonVisible ^ visibleStore.selectOrPrimaryDetectButtonVisible)">
+                <el-button v-if="visibleStore.selectOrPrimaryWaterButtonVisible" type="primary"
+                    @click="selectWaterClickHandler">浇水</el-button>
+                <el-button v-else type="primary" @click="primaryWaterClickHandler">确认</el-button>
+                <el-button v-if="visibleStore.cancelWaterButtonVisible" type="plain"
+                    @click="cancelWaterClickHandler">取消</el-button>
+            </div>
+
+            <div class="button-content"
+                v-if="(visibleStore.selectOrPrimaryWaterButtonVisible ^ visibleStore.selectOrPrimaryUpdateButtonVisible ^ visibleStore.selectOrPrimaryDetectButtonVisible)">
+                <el-button v-if="visibleStore.selectOrPrimaryMoveButtonVisible" type="warning"
+                    @click="selectMoveClickHandler">搬出</el-button>
+                <el-button v-else type="primary" @click="primaryMoveClickHandler">确认</el-button>
+                <el-button v-if="visibleStore.cancelMoveButtonVisible" type="plain"
+                    @click="cancelMoveClickHandler">取消</el-button>
+            </div>
         </div>
 
         <div v-if="flowerPotStore.list" class="drawer-content" v-infinite-scroll="loadMore">
@@ -76,11 +99,28 @@ const selectWaterClickHandler = () => {
     visibleStore.selectOrPrimaryWaterButtonVisible = false;
 }
 
+const selectUpdateClickHandler = () => {
+    visibleStore.showFlowerPotHeader = true;
+    visibleStore.cancelUpdateButtonVisible = true;
+    visibleStore.selectOrPrimaryUpdateButtonVisible = false;
+}
+
+const selectDetectClickHandler = () => {
+    visibleStore.showFlowerPotHeader = true;
+    visibleStore.cancelDetectButtonVisible = true;
+    visibleStore.selectOrPrimaryDetectButtonVisible = false;
+}
+
 const primaryMoveClickHandler = async () => {
     // 控制组件可见性
     visibleStore.showFlowerPotHeader = false;
     visibleStore.cancelMoveButtonVisible = false;
     visibleStore.selectOrPrimaryMoveButtonVisible = true;
+
+    if (!flowerPotStore.movePotIdList || flowerPotStore.movePotIdList.length === 0) {
+        ElMessage.warning("没有选中任何花盆！");
+        return;
+    }
 
     // 获取任务id
     const taskId = await api.TaskAPI.selectTaskIdByName("move");
@@ -95,10 +135,13 @@ const primaryMoveClickHandler = async () => {
 
 
     // 删除地图上要搬运的花盆组件
-    await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId + 1);
+    // await flowerPotStore.deleteSelectedFlowerPots(visibleStore.greenhouseId + 1);
 
     // 向数据库插入花卉实例使仓库新增被搬运的花卉
-    api.FlowerAPI.insertFlower(name, number, storeId);
+    await api.FlowerAPI.insertFlower(name, number, storeId);
+
+    // 执行任务
+    await api.RaspberryPiAPI.move(flowerPotStore.movePotIdList);
 
     // 清空要搬运的花盆的id列表
     flowerPotStore.clearMovePotIdList();
@@ -107,7 +150,7 @@ const primaryMoveClickHandler = async () => {
     await fetchFlowerPotData();
 
     // 生成任务完成日志
-    await logStore.insertLog('搬出花盆', true, taskId);
+    // await logStore.insertLog('搬出花盆', true, taskId);
 }
 
 const primaryWaterClickHandler = async () => {
@@ -116,17 +159,80 @@ const primaryWaterClickHandler = async () => {
     visibleStore.cancelWaterButtonVisible = false;
     visibleStore.selectOrPrimaryWaterButtonVisible = true;
 
+    if (!flowerPotStore.waterPotIdList || flowerPotStore.waterPotIdList.length === 0) {
+        ElMessage.warning("没有选中任何花盆！");
+        return;
+    }
+
+
     // 获取任务id
     const taskId = await api.TaskAPI.selectTaskIdByName("water");
 
     // 生成任务开始日志
     await logStore.insertLog('给花盆浇水', false, taskId);
 
+    // 执行任务
+    await api.RaspberryPiAPI.water(flowerPotStore.waterPotIdList);
+
     // 清空要浇水的的花盆的id列表
     flowerPotStore.clearWaterPotIdList();
 
     // 生成任务完成日志
-    await logStore.insertLog('给花盆浇水', true, taskId);
+    // await logStore.insertLog('给花盆浇水', true, taskId);
+}
+
+const primaryUpdateClickHandler = async () => {
+    // 控制组件可见性
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelUpdateButtonVisible = false;
+    visibleStore.selectOrPrimaryUpdateButtonVisible = true;
+
+    if (!flowerPotStore.updatePotIdList || flowerPotStore.updatePotIdList.length === 0) {
+        ElMessage.warning("没有选中任何花盆！");
+        return;
+    }
+
+    // 获取任务id
+    const taskId = await api.TaskAPI.selectTaskIdByName("update");
+
+    // 生成任务开始日志
+    await logStore.insertLog('更新花盆土壤温湿度', false, taskId);
+
+    // 执行任务
+    await api.RaspberryPiAPI.update(flowerPotStore.updatePotIdList);
+
+    // 清空要更新的的花盆的id列表
+    flowerPotStore.clearUpdatePotIdList();
+
+    // 生成任务完成日志
+    // await logStore.insertLog('给花盆浇水', true, taskId);
+}
+
+const primaryDetectClickHandler = async () => {
+    // 控制组件可见性
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelDetectButtonVisible = false;
+    visibleStore.selectOrPrimaryDetectButtonVisible = true;
+
+    if (!flowerPotStore.detectPotIdList || flowerPotStore.detectPotIdList.length === 0) {
+        ElMessage.warning("没有选中任何花盆！");
+        return;
+    }
+
+    // 获取任务id
+    const taskId = await api.TaskAPI.selectTaskIdByName("detect");
+
+    // 生成任务开始日志
+    await logStore.insertLog('更新花盆土壤温湿度', false, taskId);
+
+    // 执行任务
+    await api.RaspberryPiAPI.detect(flowerPotStore.detectPotIdList);
+
+    // 清空要更新的的花盆的id列表
+    flowerPotStore.clearDetectPotIdList();
+
+    // 生成任务完成日志
+    // await logStore.insertLog('给花盆浇水', true, taskId);
 }
 
 const cancelMoveClickHandler = () => {
@@ -146,6 +252,22 @@ const cancelWaterClickHandler = () => {
     flowerPotStore.clearWaterPotIdList();
 }
 
+const cancelUpdateClickHandler = () => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelUpdateButtonVisible = false;
+    visibleStore.selectOrPrimaryUpdateButtonVisible = true;
+
+    flowerPotStore.clearUpdatePotIdList();
+}
+
+const cancelDetectClickHandler = () => {
+    visibleStore.showFlowerPotHeader = false;
+    visibleStore.cancelDetectButtonVisible = false;
+    visibleStore.selectOrPrimaryDetectButtonVisible = true;
+
+    flowerPotStore.clearDetectPotIdList();
+}
+
 watch(
     () => visibleStore.flowerPotDrawerVisible,
     (newVal) => {
@@ -155,18 +277,32 @@ watch(
             potRows.value = [];
             noMore.value = false;
             visibleStore.showFlowerPotHeader = false;
-            visibleStore.cancelMoveButtonVisible = false;
             visibleStore.selectOrPrimaryMoveButtonVisible = true;
-            visibleStore.selectOrPrimaryWaterButtonVisible =true;
-            visibleStore.cancelWaterButtonVisible =false;
+            visibleStore.cancelMoveButtonVisible = false;
+            visibleStore.selectOrPrimaryWaterButtonVisible = true;
+            visibleStore.cancelWaterButtonVisible = false;
+            visibleStore.selectOrPrimaryUpdateButtonVisible = true;
+            visibleStore.cancelUpdateButtonVisible = false;
+            visibleStore.selectOrPrimaryDetectButtonVisible = true;
+            visibleStore.cancelDetectButtonVisible = false;
             flowerPotStore.clearMovePotIdList();
             flowerPotStore.clearWaterPotIdList();
+            flowerPotStore.clearUpdatePotIdList();
+            flowerPotStore.clearDetectPotIdList();
         }
     }
 );
 
 onMounted(() => {
     if (visibleStore.flowerPotDrawerVisible) fetchFlowerPotData();
+    // console.log("selectOrPrimaryMoveButtonVisible:", visibleStore.selectOrPrimaryMoveButtonVisible);
+    // console.log("cancelMoveButtonVisible:", visibleStore.cancelMoveButtonVisible);
+    // console.log("selectOrPrimaryWaterButtonVisible:", visibleStore.selectOrPrimaryWaterButtonVisible);
+    // console.log("cancelWaterButtonVisible:", visibleStore.cancelWaterButtonVisible);
+    // console.log("selectOrPrimaryUpdateButtonVisible:", visibleStore.selectOrPrimaryUpdateButtonVisible);
+    // console.log("cancelUpdateButtonVisible:", visibleStore.cancelUpdateButtonVisible);
+    // console.log("selectOrPrimaryDetectButtonVisible:", visibleStore.selectOrPrimaryDetectButtonVisible);
+    // console.log("cancelDetectButtonVisible:", visibleStore.cancelDetectButtonVisible);
 });
 
 const handleClose = () => {
@@ -229,6 +365,17 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.button-group-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px;
+    padding: 8px;
+    background: #f8f8f8;
+    border-radius: 6px;
+}
+
+
 .drawer-content {
     height: 84%;
     background-color: #f5f5f5;

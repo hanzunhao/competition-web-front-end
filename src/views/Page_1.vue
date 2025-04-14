@@ -53,7 +53,7 @@ onMounted(async () => {
 
     intervalId = setInterval(async () => {
         await greenHouseStore.getAllGreenHouse();
-    }, 3000);
+    }, 10000);
 
 });
 

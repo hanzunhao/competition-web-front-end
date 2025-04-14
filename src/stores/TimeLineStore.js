@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const TimeLineStore = defineStore('TimeLineStore', {
     state: () => ({
-        taskAndTime: {
+        list: {
             Mon: [],
             Tue: [],
             Wed: [],
@@ -13,9 +13,7 @@ export const TimeLineStore = defineStore('TimeLineStore', {
         }
     }),
     actions: {
-        logState(){
-            console.log(this.taskAndTime)
-        }
+        
     },
     persist: {
         enabled: true, // 启用持久化

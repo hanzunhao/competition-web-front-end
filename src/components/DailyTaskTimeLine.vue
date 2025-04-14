@@ -1,12 +1,12 @@
 <template>
   <el-timeline>
-    <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.time">
-      {{ activity.tag }}
+    <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.startTime">
+      {{ activity.name }}
     </el-timeline-item>
   </el-timeline>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { TimeLineStore } from '../stores/TimeLineStore';
 import { VisibleStore } from '../stores/VisibleStore';
 import { computed } from 'vue';
@@ -17,7 +17,7 @@ const visibleStore = VisibleStore();
 const day = computed(() => visibleStore.day);
 
 const activities = computed(() => {
-  const tasks = timeLineStore.taskAndTime[day.value] || [];
-  return tasks.slice().sort((a, b) => a.time.localeCompare(b.time));
+  const tasks = timeLineStore.list[day.value] || [];
+  return tasks.slice().sort((a, b) => a.startTime.localeCompare(b.startTime));
 });
 </script>
